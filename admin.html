@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Tasarım Paneli 🛠️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .panel { background: white; width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { width: 100%; padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 20px; }
+        button:hover { background: #27ae60; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .status { margin-top: 15px; text-align: center; font-weight: bold; }
+        #finalLink { display: block; margin-top: 10px; word-break: break-all; color: #3498db; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <h2>💌 Özel Site Oluşturucu</h2>
+        
+        <div class="form-group">
+            <label>1. Sevgilinin Adı (Örn: Ayşe)</label>
+            <input type="text" id="partnerName" placeholder="Ekranda yazacak isim...">
+        </div>
+
+        <div class="form-group">
+            <label>2. Teklif Mesajı (Butona basınca çıkacak)</label>
+            <input type="text" id="proposalMessage" placeholder="Örn: Sonsuza kadar evet!">
+        </div>
+
+        <div class="form-group">
+            <label>3. Şarkı Yükle (MP3)</label>
+            <input type="file" id="musicFile" accept="audio/*">
+        </div>
+
+        <div class="form-group">
+            <label>4. Fotoğraflar (8 Adet Seçin)</label>
+            <div class="file-grid">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+                <input type="file" class="photo-input" accept="image/*">
+            </div>
+        </div>
+
+        <button id="createBtn">SİTEYİ OLUŞTUR 🚀</button>
+        <p class="status" id="statusMessage"></p>
+        <a href="#" id="finalLink" target="_blank" style="display:none;"></a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+        // Senin verdiğin ayarlar
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y",
+            authDomain: "lovespage61.firebaseapp.com",
+            projectId: "lovespage61",
+            storageBucket: "lovespage61.firebasestorage.app",
+            messagingSenderId: "954368938690",
+            appId: "1:954368938690:web:b6880d8524570e6e06a15b",
+            measurementId: "G-DR224E42S8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        document.getElementById('createBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('createBtn');
+            const status = document.getElementById('statusMessage');
+            const partnerName = document.getElementById('partnerName').value;
+            const proposalMessage = document.getElementById('proposalMessage').value;
+            const musicFile = document.getElementById('musicFile').files[0];
+            const photoInputs = document.querySelectorAll('.photo-input');
+
+            if (!partnerName || !musicFile) {
+                alert("Lütfen isim girin ve müzik seçin!");
+                return;
+            }
+
+            btn.disabled = true;
+            status.innerText = "⏳ Dosyalar yükleniyor, lütfen bekleyin...";
+
+            try {
+                // 1. Müzik Yükle
+                const musicRef = ref(storage, 'musics/' + Date.now() + '-' + musicFile.name);
+                await uploadBytes(musicRef, musicFile);
+                const musicUrl = await getDownloadURL(musicRef);
+
+                // 2. Fotoğrafları Yükle
+                const imageUrls = [];
+                for (let i = 0; i < photoInputs.length; i++) {
+                    const file = photoInputs[i].files[0];
+                    if (file) {
+                        const imgRef = ref(storage, 'photos/' + Date.now() + '-' + i + '.jpg');
+                        await uploadBytes(imgRef, file);
+                        const url = await getDownloadURL(imgRef);
+                        imageUrls.push(url);
+                    } else {
+                        // Boş geçilirse varsayılan bir resim koyabiliriz veya boş bırakırız
+                        imageUrls.push("https://via.placeholder.com/300?text=Resim+Yok"); 
+                    }
+                }
+
+                // 3. Veritabanına Kaydet
+                const docRef = await addDoc(collection(db, "proposals"), {
+                    partnerName: partnerName,
+                    proposalMessage: proposalMessage,
+                    musicUrl: musicUrl,
+                    images: imageUrls,
+                    createdAt: new Date()
+                });
+
+                // 4. Linki Oluştur
+                const link = window.location.origin + window.location.pathname.replace('admin.html', 'index.html') + "?id=" + docRef.id;
+                
+                status.innerText = "✅ SİTE HAZIR!";
+                const linkElement = document.getElementById('finalLink');
+                linkElement.style.display = "block";
+                linkElement.href = link;
+                linkElement.innerText = "Tıkla ve Gör: " + link;
+                
+            } catch (error) {
+                console.error("Hata:", error);
+                status.innerText = "❌ Bir hata oluştu: " + error.message;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
