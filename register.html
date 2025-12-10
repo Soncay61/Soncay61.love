@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kayıt Ol - DreamWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f0f2f5; height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Poppins', sans-serif; }
+        .auth-box { background: white; padding: 40px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 20px; color: #333; }
+        
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        
+        .btn-main { width: 100%; padding: 12px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .btn-main:hover { background: #c0392b; }
+
+        .btn-google { width: 100%; padding: 12px; background: #fff; color: #333; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .btn-google:hover { background: #f1f1f1; border-color: #ccc; }
+        .google-icon { color: #DB4437; font-size: 18px; }
+
+        .divider { margin: 20px 0; border-top: 1px solid #eee; position: relative; }
+        .divider span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h2>Kayıt Ol</h2>
+        <input type="email" id="email" placeholder="E-posta">
+        <input type="password" id="password" placeholder="Şifre (En az 6 karakter)">
+        <button id="regBtn" class="btn-main">Kayıt Ol</button>
+        
+        <div class="divider"><span>VEYA</span></div>
+
+        <button id="googleBtn" class="btn-google">
+            <i class="fab fa-google google-icon"></i> Google ile Kayıt Ol
+        </button>
+
+        <p id="errorMsg" style="color:red; font-size:13px; margin-top:10px;"></p>
+        <p style="margin-top:15px; font-size:14px;">Zaten üye misin? <a href="login.html">Giriş Yap</a></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        onAuthStateChanged(auth, (user) => { if (user) window.location.href = "dashboard.html"; });
+
+        // Normal Kayıt
+        document.getElementById('regBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                document.getElementById('errorMsg').innerText = "Hata: " + error.message;
+            }
+        });
+
+        // Google ile Giriş
+const googleBtn = document.getElementById('googleBtn');
+
+googleBtn.addEventListener('click', async () => {
+    try {
+        // 1. Butonu kilitle (Çift tıklamayı önlemek için)
+        googleBtn.disabled = true;
+        googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Bekleniyor...';
+
+        // 2. Pencereyi aç
+        await signInWithPopup(auth, provider);
+        
+        // Başarılı olursa zaten yönlendirme kodu çalışacak
+    } catch (error) {
+        console.error(error);
+        
+        // Hata: "cancelled-popup-request" ise (Kullanıcı kapattıysa) sessiz kal veya uyar
+        if (error.code === 'auth/cancelled-popup-request') {
+            document.getElementById('errorMsg').innerText = "Giriş işlemi iptal edildi.";
+        } else {
+            document.getElementById('errorMsg').innerText = "Hata: " + error.message;
+        }
+
+        // 3. Butonu tekrar aç (Hata aldıysa tekrar deneyebilsin)
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = '<i class="fab fa-google google-icon"></i> Google ile Devam Et';
+    }
+});
+    </script>
+</body>
+</html>

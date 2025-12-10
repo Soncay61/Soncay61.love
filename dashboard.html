@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Projelerim - DreamWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f8f9fa; margin: 0; }
+        
+        /* Navbar */
+        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-weight:bold; font-size:20px; color: #2c3e50; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
+
+        /* Container */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-new { background: #2ecc71; color: white; text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-new:hover { background: #27ae60; transform: translateY(-2px); }
+
+        /* Proje Kartları Izgarası */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        
+        .project-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; }
+        .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .card-img { height: 180px; width: 100%; object-fit: cover; background: #eee; }
+        .card-body { padding: 20px; }
+        .card-title { font-weight: 600; font-size: 18px; margin-bottom: 5px; color: #333; }
+        .card-date { font-size: 12px; color: #888; margin-bottom: 15px; display: block; }
+        
+        .btn-view { display: block; width: 100%; padding: 10px; background: #3498db; color: white; text-align: center; text-decoration: none; border-radius: 6px; font-weight: 600; }
+        .btn-view:hover { background: #2980b9; }
+
+        /* Boş Durum */
+        #emptyState { text-align: center; padding: 50px; background: white; border-radius: 15px; color: #777; display: none; }
+        .empty-icon { font-size: 50px; color: #ddd; margin-bottom: 20px; }
+        #loadingMsg { text-align: center; margin-top: 50px; font-size: 18px; color: #555; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">DreamWeb Panel</div>
+        <div>
+            <span id="userEmail" style="font-size:14px; color:#555;"></span>
+            <button class="btn-logout" id="logoutBtn">Çıkış</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-area">
+            <h1>Projelerim</h1>
+            <a href="editor.html" class="btn-new"><i class="fas fa-plus"></i> Yeni Proje</a>
+        </div>
+
+        <div id="loadingMsg">⏳ Projelerin yükleniyor...</div>
+
+        <div class="projects-grid" id="projectsGrid"></div>
+
+        <div id="emptyState">
+            <i class="fas fa-folder-open empty-icon"></i>
+            <p>Henüz hiç projen yok kral.</p>
+            <p>Hadi ilk tasarımını yap!</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // SENİN AYARLARIN
+        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Giriş Kontrolü ve Veri Çekme
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('userEmail').innerText = user.email;
+                loadUserProjects(user.uid);
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Çıkış Yap
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "index.html");
+        });
+
+        // --- PROJELERİ GETİRME FONKSİYONU ---
+        async function loadUserProjects(userId) {
+            const grid = document.getElementById('projectsGrid');
+            const empty = document.getElementById('emptyState');
+            const loading = document.getElementById('loadingMsg');
+
+            try {
+                // Veritabanına sorgu at: "userId"si benim olanları getir
+                const q = query(collection(db, "proposals"), where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
+
+                loading.style.display = 'none'; // Yükleniyor yazısını gizle
+
+                if (querySnapshot.empty) {
+                    empty.style.display = 'block'; // Hiç proje yoksa boş durumu göster
+                } else {
+                    empty.style.display = 'none'; // Varsa gizle
+                    
+                    // Her proje için bir kart oluştur
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const projectId = doc.id;
+                        
+                        // İlk resmi kapak resmi yapalım
+                        const coverImage = (data.images && data.images.length > 0) ? data.images[0] : 'https://via.placeholder.com/300';
+                        
+                        // Tarihi düzelt
+                        let dateStr = "Tarih yok";
+                        if(data.createdAt && data.createdAt.toDate) {
+                            dateStr = data.createdAt.toDate().toLocaleDateString("tr-TR");
+                        }
+
+                        // Linki oluştur (view.html'e giden link)
+                        const viewLink = `view.html?id=${projectId}`;
+
+                        const cardHTML = `
+                            <div class="project-card">
+                                <img src="${coverImage}" class="card-img" alt="Kapak">
+                                <div class="card-body">
+                                    <h3 class="card-title">${data.partnerName} İçin</h3>
+                                    <span class="card-date">📅 ${dateStr}</span>
+                                    <a href="${viewLink}" target="_blank" class="btn-view">
+                                        <i class="fas fa-eye"></i> Siteye Git
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        grid.innerHTML += cardHTML;
+                    });
+                }
+
+            } catch (error) {
+                console.error("Hata:", error);
+                loading.innerText = "Projeler yüklenirken hata oluştu :(";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benimle Evlenir Misin?</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container" id="mainCard">
+        <div class="card">
+            <div class="content">
+                <div class="ring-animation">
+                    <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" alt="Tektaş Yüzük" class="ring-img">
+                </div>
+                <h1 class="title" id="mainTitle">Yükleniyor...</h1>
+                <p class="subtitle">Ömrümün geri kalanı olur musun?</p>
+            </div>
+            <div class="buttons">
+                <button class="btnYes" id="yesButton">EVET 💍</button>
+                <button class="btnNo" id="noButton">HAYIR 💔</button>
+            </div>
+        </div>
+    </div> 
+    <div class="gallery-container" style="display: none;">
+        <div class="box"><div class="dream" id="photoGallery"></div></div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadSiteData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const docId = urlParams.get('id');
+            let data = { partnerName: "Prenses", proposalMessage: "Sonsuza kadar EVET! 💍", musicUrl: "ses/sess.mp3", images: [] };
+
+            if (docId) {
+                try {
+                    const docSnap = await getDoc(doc(db, "proposals", docId));
+                    if (docSnap.exists()) data = docSnap.data();
+                } catch (error) { console.error(error); }
+            }
+            document.getElementById('mainTitle').innerText = `Benimle Evlenir Misin ${data.partnerName}?`;
+            const gallery = document.getElementById('photoGallery');
+            data.images.forEach((imgUrl, index) => {
+                if(index < 8) {
+                    const span = document.createElement('span');
+                    span.style.setProperty('--i', index + 1);
+                    const img = document.createElement('img');
+                    img.src = imgUrl;
+                    span.appendChild(img);
+                    gallery.appendChild(span);
+                }
+            });
+            initLogic(data);
+        }
+
+        function initLogic(data) {
+            const yesButton = document.getElementById('yesButton');
+            const noButton = document.getElementById('noButton');
+            const card = document.querySelector('.card'); 
+            const mainContainer = document.getElementById('mainCard');
+            const title = document.querySelector('.title');
+            if(card) { card.style.position = "relative"; card.style.overflow = "hidden"; }
+            let isYesClicked = false, escapeCount = 0; 
+            
+            yesButton.addEventListener('click', function () {
+                if (!isYesClicked) {
+                    isYesClicked = true;
+                    const audio = new Audio(data.musicUrl); audio.volume = 0.5; audio.play().catch(e => console.log(e));
+                    startConfetti();
+                    title.innerText = data.proposalMessage;
+                    document.querySelector('.buttons').style.display = 'none';
+                    if(noButton) noButton.style.display = 'none'; 
+                    setTimeout(() => {
+                        mainContainer.style.opacity = "0";
+                        const galleryCont = document.querySelector('.gallery-container');
+                        galleryCont.style.display = 'flex'; 
+                        setTimeout(() => { galleryCont.style.opacity = "1"; mainContainer.style.display = "none"; }, 500);
+                    }, 3000); 
+                }
+            });
+            // Kaçma mantığı
+            function moveButton() {
+                escapeCount++; 
+                if (escapeCount >= 5) { noButton.style.display = 'none'; title.innerText = "Naz yapma prenses! 😉"; return; }
+                if (noButton.parentElement !== card) card.appendChild(noButton);
+                const rect = card.getBoundingClientRect();
+                const x = Math.max(40, Math.random() * (rect.width - 100));
+                const y = Math.max(40, Math.random() * (rect.height - 50));
+                noButton.style.position = 'absolute'; noButton.style.left = x + 'px'; noButton.style.top = y + 'px';
+            }
+            noButton.addEventListener('mouseover', moveButton);
+            noButton.addEventListener('click', (e) => { e.preventDefault(); moveButton(); });
+        }
+        function startConfetti() { for(let i=0; i<50; i++) setTimeout(() => { const h = document.createElement('div'); h.className='heart'; h.innerHTML='💍'; document.body.appendChild(h); }, i*100); }
+        window.addEventListener('DOMContentLoaded', loadSiteData);
+    </script>
+</body>
+</html>

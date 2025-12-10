@@ -3,208 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benimle Evlenir Misin?</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <title>DreamWeb - Aşkını Tasarla</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+        
+        /* Navbar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: 700; color: #2c3e50; }
+        .logo span { color: #e74c3c; }
+        
+        .btn-action { 
+            padding: 10px 25px; 
+            background: #e74c3c; 
+            color: white; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-action:hover { background: #c0392b; transform: translateY(-2px); }
+
+        /* Hero (Giriş) Alanı */
+        header { text-align: center; padding: 80px 20px 40px; background: linear-gradient(135deg, #fff 0%, #f0f2f5 100%); }
+        header h1 { font-size: 3rem; margin-bottom: 20px; color: #2c3e50; line-height: 1.2; }
+        header p { font-size: 1.1rem; color: #7f8c8d; max-width: 600px; margin: 0 auto 30px; }
+        
+        /* Projeler Vitrini (Dashboard Görünümlü) */
+        .showcase-section { padding: 40px 5% 80px; }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 1.8rem; color: #2c3e50; }
+        
+        .projects-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px; 
+            max-width: 1000px; 
+            margin: 0 auto;
+        }
+        
+        /* Demo Kart Tasarımı */
+        .project-card { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            transition: 0.3s; 
+            border: 1px solid #eee;
+            position: relative;
+        }
+        .project-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        
+        /* Demo Etiketi */
+        .demo-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f1c40f;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card-img { 
+            height: 200px; 
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .ring-icon { font-size: 60px; color: white; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); }
+        
+        .card-content { padding: 25px; text-align: center; }
+        .card-title { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; color: #333; }
+        .card-desc { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+        
+        .btn-preview { 
+            display: inline-block; 
+            width: 100%; 
+            padding: 12px; 
+            background: #3498db; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            transition: 0.3s; 
+        }
+        .btn-preview:hover { background: #2980b9; }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    
-    <div class="background-overlay"></div>
 
-    <div class="container" id="mainCard">
-        <div class="card">
-            <div class="content">
-                <div class="ring-animation">
-                    <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" alt="Tektaş Yüzük" class="ring-img">
+    <nav>
+        <div class="logo">Dream<span>Web</span></div>
+        <button id="navBtn" class="btn-action">Kendi Projeni Oluştur</button>
+    </nav>
+
+    <header>
+        <h1>Sevdiklerinize Özel<br>Sürpriz Siteler Yapın</h1>
+        <p>Kodlama bilmeden, sadece fotoğraf yükleyerek aşkını ilan et. Hemen aşağıdaki demoyu incele!</p>
+        <button id="heroBtn" class="btn-action" style="padding: 15px 40px; font-size: 1.1rem;">
+            <i class="fas fa-magic"></i> Kendi Projeni Oluştur
+        </button>
+    </header>
+
+    <section class="showcase-section">
+        <h2 class="section-title">✨ Örnek Tasarım</h2>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <span class="demo-badge"><i class="fas fa-star"></i> DEMO</span>
+                <div class="card-img">
+                    <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" width="80" alt="Yüzük">
                 </div>
-                
-                <h1 class="title" id="mainTitle">Yükleniyor...</h1>
-                <p class="subtitle">Ömrümün geri kalanı olur musun?</p>
+                <div class="card-content">
+                    <h3 class="card-title">Evlilik Teklifi</h3>
+                    <p class="card-desc">İnteraktif, müzikli ve 3D galerili efsane bir tasarım örneği.</p>
+                    
+                    <a href="demo.html" target="_blank" class="btn-preview">
+                        <i class="fas fa-eye"></i> Canlı Önizle
+                    </a>
+                </div>
             </div>
             
-            <div class="buttons">
-                <button class="btnYes" id="yesButton">EVET 💍</button>
-                <button class="btnNo" id="noButton">HAYIR 💔</button>
             </div>
-        </div>
-    </div> 
-
-    <div class="gallery-container" style="display: none;">
-        <div class="box">
-            <div class="dream" id="photoGallery">
-                </div>
-        </div>
-    </div>
-        
-    <footer>
-        <a href="https://www.instagram.com/soncaybektas/" target="_blank">
-            <i class="fab fa-instagram"></i> Instagram
-        </a>
-    </footer>
+    </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y",
-            authDomain: "lovespage61.firebaseapp.com",
-            projectId: "lovespage61",
-            storageBucket: "lovespage61.firebasestorage.app",
-            messagingSenderId: "954368938690",
-            appId: "1:954368938690:web:b6880d8524570e6e06a15b",
-            measurementId: "G-DR224E42S8"
-        };
-
+        // SENİN AYARLARIN
+        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        // --- Verileri Çekme Fonksiyonu ---
-        async function loadSiteData() {
-            // URL'den ?id=XYZ kısmını al
-            const urlParams = new URLSearchParams(window.location.search);
-            const docId = urlParams.get('id');
+        const navBtn = document.getElementById('navBtn');
+        const heroBtn = document.getElementById('heroBtn');
+        let isLoggedIn = false;
 
-            // Varsayılan veriler (Eğer ID yoksa bunlar görünsün)
-            let data = {
-                partnerName: "Prenses",
-                proposalMessage: "Sonsuza kadar EVET! 💍",
-                musicUrl: "ses/sess.mp3", // Klasördeki yedek müzik
-                images: ["fotolar/1.jpg", "fotolar/2.jpg", "fotolar/3.jpg", "fotolar/4.jpg", "fotolar/5.jpg", "fotolar/6.jpg", "fotolar/7.jpg", "fotolar/8.jpg"]
-            };
-
-            if (docId) {
-                try {
-                    const docRef = doc(db, "proposals", docId);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        data = docSnap.data();
-                        console.log("Veri çekildi:", data);
-                    } else {
-                        console.log("Böyle bir kayıt bulunamadı!");
-                    }
-                } catch (error) {
-                    console.error("Hata:", error);
-                }
+        // Kullanıcı durumunu kontrol et
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Giriş yapmışsa
+                isLoggedIn = true;
+                navBtn.innerText = "Panele Git";
+                heroBtn.innerHTML = '<i class="fas fa-columns"></i> Panele Git';
+            } else {
+                // Yapmamışsa
+                isLoggedIn = false;
+                navBtn.innerText = "Kendi Projeni Oluştur";
+                heroBtn.innerHTML = '<i class="fas fa-magic"></i> Kendi Projeni Oluştur';
             }
+        });
 
-            // 1. İsmi Güncelle
-            document.getElementById('mainTitle').innerText = `Benimle Evlenir Misin ${data.partnerName}?`;
-
-            // 2. Galeriyi Doldur
-            const gallery = document.getElementById('photoGallery');
-            gallery.innerHTML = ''; // Temizle
-            data.images.forEach((imgUrl, index) => {
-                // Sadece 8 tane koyalım
-                if(index < 8) {
-                    const span = document.createElement('span');
-                    span.style.setProperty('--i', index + 1);
-                    const img = document.createElement('img');
-                    img.src = imgUrl;
-                    span.appendChild(img);
-                    gallery.appendChild(span);
-                }
-            });
-
-            // 3. Müzik ve Buton Mantığını Başlat
-            initLogic(data);
-        }
-
-        // --- Buton ve Animasyon Mantığı ---
-        function initLogic(data) {
-            const yesButton = document.getElementById('yesButton');
-            const noButton = document.getElementById('noButton');
-            const card = document.querySelector('.card'); 
-            const mainContainer = document.getElementById('mainCard');
-            const title = document.querySelector('.title');
-            
-            // Kart Ayarı
-            if(card) { card.style.position = "relative"; card.style.overflow = "hidden"; }
-
-            let isYesClicked = false;
-            let escapeCount = 0; 
-            const maxEscapes = 5; 
-
-            // EVET TIKLAMA
-            yesButton.addEventListener('click', function () {
-                if (!isYesClicked) {
-                    isYesClicked = true;
-                    
-                    // Veritabanından gelen müziği çal
-                    const audio = new Audio(data.musicUrl);
-                    audio.volume = 0.5; 
-                    audio.play().catch(e => console.log("Ses hatası (tıklama gerekir):", e));
-
-                    startConfetti();
-
-                    // Veritabanından gelen mesajı yaz
-                    title.innerText = data.proposalMessage;
-                    document.querySelector('.subtitle').textContent = 'Seni dünyanın en mutlu insanı yapacağım...';
-                    
-                    document.querySelector('.buttons').style.display = 'none';
-                    if(noButton) noButton.style.display = 'none'; 
-
-                    // Galeriye Geç
-                    setTimeout(() => {
-                        mainContainer.style.opacity = "0";
-                        const galleryCont = document.querySelector('.gallery-container');
-                        galleryCont.style.display = 'flex'; 
-                        setTimeout(() => {
-                            galleryCont.style.opacity = "1";
-                            mainContainer.style.display = "none"; 
-                        }, 500);
-                    }, 3000); 
-                }
-            });
-
-            // HAYIR KAÇMA (Değişmedi)
-            function moveButton() {
-                escapeCount++; 
-                if (escapeCount >= maxEscapes) {
-                    noButton.style.opacity = "0";
-                    noButton.style.transform = "scale(0)";
-                    setTimeout(() => { noButton.style.display = 'none'; }, 500);
-                    title.innerText = "Naz yapma prenses, takacağım o yüzüğü 😉";
-                    return; 
-                }
-                if (noButton.parentElement !== card) card.appendChild(noButton);
-                
-                const padding = 40; 
-                const cardRect = card.getBoundingClientRect();
-                const maxWidth = cardRect.width - noButton.offsetWidth - padding;
-                const maxHeight = cardRect.height - noButton.offsetHeight - padding;
-                const randomX = Math.max(padding, Math.random() * maxWidth);
-                const randomY = Math.max(padding, Math.random() * maxHeight);
-
-                noButton.style.position = 'absolute'; 
-                noButton.style.left = randomX + 'px';
-                noButton.style.top = randomY + 'px';
-            }
-
-            noButton.addEventListener('mouseover', moveButton);
-            noButton.addEventListener('click', (e) => { e.preventDefault(); moveButton(); });
-            noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
-        }
-
-        // KALP KONFETİ
-        function startConfetti() {
-            for(let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.innerHTML = '💍'; 
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.fontSize = Math.random() * 20 + 20 + 'px'; 
-                    heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-                    document.body.appendChild(heart);
-                    setTimeout(() => { heart.remove(); }, 5000);
-                }, i * 100); 
+        // Butonlara tıklayınca ne olsun?
+        function handleAction() {
+            if (isLoggedIn) {
+                // Giriş yapmışsa Dashboard'a
+                window.location.href = "dashboard.html";
+            } else {
+                // Yapmamışsa Kayıt Sayfasına
+                window.location.href = "register.html";
             }
         }
 
-        // Sayfa açılınca verileri yükle
-        window.addEventListener('DOMContentLoaded', loadSiteData);
+        navBtn.addEventListener('click', handleAction);
+        heroBtn.addEventListener('click', handleAction);
+
     </script>
 </body>
 </html>
