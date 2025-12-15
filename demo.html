@@ -3,166 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Örnek Tasarım - DreamWeb</title>
-    <link rel="stylesheet" href="style.css">
+    <title>DreamWeb - Profesyonel Önizleme</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
     <div class="background-overlay"></div>
 
     <div class="container" id="mainCard">
-        <div class="card">
+        <div class="card" data-aos="zoom-in" data-aos-duration="1200">
             <div class="content">
-                <div class="ring-animation">
-                    <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" alt="Tektaş Yüzük" class="ring-img">
-                </div>
+                <div id="iconWrapper" class="ring-animation" data-aos="fade-down" data-aos-delay="400">
+                    </div>
                 
-                <h1 class="title" id="mainTitle">Benimle Evlenir Misin?</h1>
-                <p class="subtitle">Ömrümün geri kalanı olur musun?</p>
+                <h1 class="title" id="mainTitle" data-aos="fade-up" data-aos-delay="600">Yükleniyor...</h1>
+                <p class="subtitle" id="mainSubtitle" data-aos="fade-up" data-aos-delay="800">Lütfen bekleyin...</p>
             </div>
             
-            <div class="buttons">
-                <button class="btnYes" id="yesButton">EVET 💍</button>
-                <button class="btnNo" id="noButton">HAYIR 💔</button>
+            <div class="buttons" id="btnGroup" data-aos="fade-up" data-aos-delay="1000">
+                <button class="btnYes" id="yesButton">EVET</button>
+                <button class="btnNo" id="noButton">HAYIR</button>
             </div>
         </div>
     </div> 
 
-    <div class="gallery-container" style="display: none;">
+    <div class="gallery-container" id="galleryLayer" style="display: none;">
         <div class="box">
             <div class="dream" id="photoGallery">
-                <span style="--i:1"><img src="https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:2"><img src="https://images.pexels.com/photos/2959192/pexels-photo-2959192.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:3"><img src="https://images.pexels.com/photos/3352398/pexels-photo-3352398.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:4"><img src="https://images.pexels.com/photos/2910309/pexels-photo-2910309.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:5"><img src="https://images.pexels.com/photos/1417255/pexels-photo-1417255.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:6"><img src="https://images.pexels.com/photos/1839564/pexels-photo-1839564.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:7"><img src="https://images.pexels.com/photos/935789/pexels-photo-935789.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-                <span style="--i:8"><img src="https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=600"></span>
-            </div>
+                </div>
         </div>
     </div>
-        
-    <footer>
-        <a href="#" target="_blank">
-            DreamWeb Demo Tasarımı
-        </a>
-    </footer>
-
+    
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        // Müzik Linki (Login sayfasındaki piyano müziği)
-        const musicUrl = "https://cdn.pixabay.com/download/audio/2022/02/10/audio_fc8c69707b.mp3?filename=piano-moment-11993.mp3";
+        AOS.init({ duration: 1000, once: true });
 
-        const yesButton = document.getElementById('yesButton');
-        const noButton = document.getElementById('noButton');
-        const card = document.querySelector('.card'); 
-        const mainContainer = document.getElementById('mainCard');
-        const title = document.querySelector('.title');
-        
-        let isYesClicked = false;
-        let escapeCount = 0; 
-        const maxEscapes = 5;
+        // SAYFA YÜKLENİR YÜKLENMEZ ÇALIŞTIR (Hız için)
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type') || 'love'; 
+            const isBirthday = (type === 'birthday');
 
-        // --- EVET BUTONU TIKLANINCA ---
-        yesButton.addEventListener('click', function () {
-            if (!isYesClicked) {
-                isYesClicked = true;
-                
-                // 1. Müziği Çal
-                const audio = new Audio(musicUrl);
-                audio.volume = 0.6; 
-                audio.play().catch(e => console.log("Ses hatası (Tarayıcı engeli olabilir):", e));
+            // --- AYARLAR ---
+            const config = {
+                title: isBirthday ? "İyi Ki Doğdun Prenses!" : "Benimle Evlenir Misin?",
+                subtitle: isBirthday ? "Yeni yaşın sana huzur ve mutluluk getirsin..." : "Ömrümün geri kalanı olur musun?",
+                yesMsg: isBirthday ? "İyi Ki Varsın Sevgilim! 🎉" : "Sonsuza kadar EVET! ❤️",
+                btnYesText: isBirthday ? "KUTLA 🎉" : "EVET 💍",
+                btnNoText: isBirthday ? "HAYIR 🎂" : "HAYIR 💔",
+                emoji: isBirthday ? '🎉' : '❤️',
+                iconHtml: isBirthday ? 
+                    `<div class="cake-wrapper">
+                        <div class="flame"></div>
+                        <img src="https://cdn-icons-png.flaticon.com/512/3132/3132715.png" class="cake-img">
+                    </div>` : 
+                    `<img src="https://pngimg.com/uploads/ring/ring_PNG26.png" class="ring-img">`
+            };
 
-                // 2. Konfeti Patlat
-                startConfetti();
+            // DOM'un hazır olmasını bekle ama verileri hızlıca hazırla
+            window.addEventListener('DOMContentLoaded', () => {
+                const mainTitle = document.getElementById('mainTitle');
+                const mainSubtitle = document.getElementById('mainSubtitle');
+                const iconWrapper = document.getElementById('iconWrapper');
+                const yesButton = document.getElementById('yesButton');
+                const noButton = document.getElementById('noButton');
+                const photoGallery = document.getElementById('photoGallery');
+                const card = document.querySelector('.card');
 
-                // 3. Yazıları Değiştir
-                title.innerText = "Sonsuza Kadar EVET! 💍";
-                document.querySelector('.subtitle').textContent = 'Seni dünyanın en mutlu insanı yapacağım...';
-                
-                // 4. Butonları Gizle
-                document.querySelector('.buttons').style.display = 'none';
-                if(noButton) noButton.style.display = 'none'; 
+                // İçeriği Giydir
+                mainTitle.innerText = config.title;
+                mainSubtitle.innerText = config.subtitle;
+                iconWrapper.innerHTML = config.iconHtml;
+                yesButton.innerHTML = config.btnYesText;
+                noButton.innerHTML = config.btnNoText;
 
-                // 5. Galeriye Geçiş Animasyonu
-                setTimeout(() => {
-                    // Kartı yavaşça yok et
-                    mainContainer.style.opacity = "0"; 
+                // Galeriyi Oluştur (View'daki o meşhur span yapısı)
+                for (let i = 1; i <= 8; i++) {
+                    const span = document.createElement('span');
+                    span.style.setProperty('--i', i);
+                    const img = document.createElement('img');
+                    img.src = `https://picsum.photos/400/600?random=${i + (isBirthday ? 20 : 80)}`;
+                    span.appendChild(img);
+                    photoGallery.appendChild(span);
+                }
+
+                // --- HAYIR BUTONU KAÇIRMA (VİEW.HTML MANTIĞI) ---
+                let escapeCount = 0;
+                function moveButton() {
+                    escapeCount++;
+                    if (escapeCount >= 5) {
+                        noButton.style.display = 'none';
+                        mainTitle.innerText = isBirthday ? "Pastayı üfle artık! 🎂" : "Naz yapma prenses! 😉";
+                        return;
+                    }
+                    const rect = card.getBoundingClientRect();
+                    const x = Math.max(10, Math.random() * (rect.width - 120));
+                    const y = Math.max(10, Math.random() * (rect.height - 50));
+                    noButton.style.position = 'absolute';
+                    noButton.style.left = x + 'px';
+                    noButton.style.top = y + 'px';
+                }
+
+                noButton.addEventListener('mouseover', moveButton);
+                noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+
+                // --- EVET BUTONU ---
+                yesButton.addEventListener('click', () => {
+                    mainTitle.innerText = config.yesMsg;
+                    mainSubtitle.textContent = 'Seninle bir ömür boyu, el ele...';
+                    document.getElementById('btnGroup').style.display = 'none';
                     
-                    const galleryCont = document.querySelector('.gallery-container');
-                    galleryCont.style.display = 'flex'; // Galeriyi görünür yap (ama şeffaf)
-                    
-                    // Galeriyi yavaşça netleştir
+                    startConfetti(config.emoji);
+
                     setTimeout(() => {
-                        galleryCont.style.opacity = "1";
-                        mainContainer.style.display = "none"; // Kartı tamamen kaldır
-                    }, 500);
-                }, 3000); // 3 saniye bekle (yazıyı okusun)
-            }
-        });
+                        document.getElementById('mainCard').style.opacity = "0";
+                        const galleryCont = document.getElementById('galleryLayer');
+                        galleryCont.style.display = 'flex'; 
+                        setTimeout(() => { 
+                            galleryCont.style.opacity = "1"; 
+                            document.getElementById('mainCard').style.display = "none"; 
+                        }, 500);
+                    }, 3000);
+                });
 
-        // --- HAYIR BUTONU (KAÇMA EFEKTİ) ---
-        function moveButton() {
-            escapeCount++; 
-            if (escapeCount >= maxEscapes) {
-                // 5 kere kaçtıktan sonra yok ol
-                noButton.style.opacity = "0";
-                noButton.style.transform = "scale(0)";
-                setTimeout(() => { noButton.style.display = 'none'; }, 500);
-                title.innerText = "Naz yapma prenses, bas şu butona! 😉";
-                return; 
-            }
-            
-            // Kartın dışına taşmasın diye hesaplama
-            if (noButton.parentElement !== card) card.appendChild(noButton);
-            
-            const padding = 20; 
-            const cardRect = card.getBoundingClientRect();
-            // Butonun gidebileceği maksimum alan
-            const maxWidth = cardRect.width - 120; 
-            const maxHeight = cardRect.height - 60;
-
-            const randomX = Math.max(padding, Math.random() * maxWidth);
-            const randomY = Math.max(padding, Math.random() * maxHeight);
-
-            noButton.style.position = 'absolute'; 
-            noButton.style.left = randomX + 'px';
-            noButton.style.top = randomY + 'px';
-        }
-
-        // Fareyle üzerine gelince veya tıklayınca kaç
-        noButton.addEventListener('mouseover', moveButton);
-        noButton.addEventListener('click', (e) => { e.preventDefault(); moveButton(); });
-        noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
-
-        // --- GELİŞMİŞ KONFETİ EFEKTİ (Süzülerek Düşen) ---
-        function startConfetti() {
-            for(let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.innerHTML = '💍'; // İstersen ❤️ yapabilirsin
-                    
-                    // Rastgele Konum (Ekranın sağından soluna her yerinden)
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    
-                    // Rastgele Hız
-                    const duration = Math.random() * 3 + 2;
-                    heart.style.animationDuration = duration + 's';
-                    
-                    // Rastgele Boyut
-                    const size = Math.random() * 20 + 20;
-                    heart.style.fontSize = size + 'px';
-
-                    document.body.appendChild(heart);
-                    
-                    // Temizlik (Animasyon bitince sil)
-                    setTimeout(() => { heart.remove(); }, duration * 1000);
-                }, i * 150); 
-            }
-        }
+                function startConfetti(char) { 
+                    for(let i=0; i<60; i++) {
+                        setTimeout(() => { 
+                            const h = document.createElement('div'); 
+                            h.className='heart'; 
+                            h.innerHTML= Math.random() > 0.5 ? char : '✨'; 
+                            h.style.left = Math.random() * 100 + 'vw';
+                            const duration = Math.random() * 3 + 2; 
+                            h.style.animationDuration = duration + 's';
+                            document.body.appendChild(h); 
+                            setTimeout(() => h.remove(), duration * 1000);
+                        }, i * 100); 
+                    } 
+                }
+            });
+        })();
     </script>
 </body>
 </html>

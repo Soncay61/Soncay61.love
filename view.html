@@ -4,25 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benimle Evlenir Misin?</title>
-    <link rel="stylesheet" href="style.css">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
     <div class="background-overlay"></div>
 
     <div class="container" id="mainCard">
-        <div class="card">
+        <div class="card" data-aos="zoom-in" data-aos-duration="1200">
             <div class="content">
-                <div class="ring-animation">
+                <div class="ring-animation" data-aos="fade-down" data-aos-delay="400">
                     <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" alt="Tektaş Yüzük" class="ring-img">
                 </div>
                 
-                <h1 class="title" id="mainTitle">Yükleniyor...</h1>
-                <p class="subtitle">Ömrümün geri kalanı olur musun?</p>
+                <h1 class="title" id="mainTitle" data-aos="fade-up" data-aos-delay="600">Yükleniyor...</h1>
+                <p class="subtitle" data-aos="fade-up" data-aos-delay="800">Ömrümün geri kalanı olur musun?</p>
             </div>
             
-            <div class="buttons">
+            <div class="buttons" data-aos="fade-up" data-aos-delay="1000">
                 <button class="btnYes" id="yesButton">EVET 💍</button>
                 <button class="btnNo" id="noButton">HAYIR 💔</button>
             </div>
@@ -31,16 +35,31 @@
 
     <div class="gallery-container" style="display: none;">
         <div class="box">
-            <div class="dream" id="photoGallery">
-                </div>
+            <div class="dream" id="photoGallery"></div>
         </div>
     </div>
     
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true // Animasyonun sadece bir kez çalışması için
+        });
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", 
+            authDomain: "lovespage61.firebaseapp.com", 
+            projectId: "lovespage61", 
+            storageBucket: "lovespage61.firebasestorage.app", 
+            messagingSenderId: "954368938690", 
+            appId: "1:954368938690:web:b6880d8524570e6e06a15b", 
+            measurementId: "G-DR224E42S8" 
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -52,14 +71,14 @@
                 partnerName: "Prenses",
                 proposalMessage: "Sonsuza kadar EVET! 💍",
                 musicUrl: "ses/sess.mp3", 
-                images: ["https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600", "https://via.placeholder.com/600"]
+                images: Array(8).fill("https://via.placeholder.com/600")
             };
 
             if (docId) {
                 try {
                     const docSnap = await getDoc(doc(db, "proposals", docId));
                     if (docSnap.exists()) data = docSnap.data();
-                } catch (error) { console.error(error); }
+                } catch (error) { console.error("Veri çekme hatası:", error); }
             }
 
             document.getElementById('mainTitle').innerText = `Benimle Evlenir Misin ${data.partnerName}?`;
@@ -84,58 +103,65 @@
             const mainContainer = document.getElementById('mainCard');
             const title = document.querySelector('.title');
             
-            if(card) { card.style.position = "relative"; card.style.overflow = "hidden"; }
             let isYesClicked = false, escapeCount = 0; 
 
             yesButton.addEventListener('click', function () {
                 if (!isYesClicked) {
                     isYesClicked = true;
-                    const audio = new Audio(data.musicUrl); audio.volume = 0.5; audio.play().catch(e => console.log(e));
+                    const audio = new Audio(data.musicUrl); 
+                    audio.volume = 0.5; 
+                    audio.play().catch(e => console.log("Ses çalma hatası:", e));
+                    
                     startConfetti();
+                    
                     title.innerText = data.proposalMessage;
                     document.querySelector('.subtitle').textContent = 'Seni dünyanın en mutlu insanı yapacağım...';
                     document.querySelector('.buttons').style.display = 'none';
-                    if(noButton) noButton.style.display = 'none'; 
+                    
                     setTimeout(() => {
                         mainContainer.style.opacity = "0";
                         const galleryCont = document.querySelector('.gallery-container');
                         galleryCont.style.display = 'flex'; 
-                        setTimeout(() => { galleryCont.style.opacity = "1"; mainContainer.style.display = "none"; }, 500);
+                        setTimeout(() => { 
+                            galleryCont.style.opacity = "1"; 
+                            mainContainer.style.display = "none"; 
+                        }, 500);
                     }, 3000); 
                 }
             });
 
             function moveButton() {
                 escapeCount++; 
-                if (escapeCount >= 5) { noButton.style.display = 'none'; title.innerText = "Naz yapma prenses! 😉"; return; }
-                if (noButton.parentElement !== card) card.appendChild(noButton);
+                if (escapeCount >= 5) { 
+                    noButton.style.display = 'none'; 
+                    title.innerText = "Naz yapma prenses! 😉"; 
+                    return; 
+                }
                 const rect = card.getBoundingClientRect();
-                const x = Math.max(40, Math.random() * (rect.width - 100));
-                const y = Math.max(40, Math.random() * (rect.height - 50));
-                noButton.style.position = 'absolute'; noButton.style.left = x + 'px'; noButton.style.top = y + 'px';
+                const x = Math.max(10, Math.random() * (rect.width - 120));
+                const y = Math.max(10, Math.random() * (rect.height - 50));
+                noButton.style.position = 'absolute'; 
+                noButton.style.left = x + 'px'; 
+                noButton.style.top = y + 'px';
             }
+
             noButton.addEventListener('mouseover', moveButton);
-            noButton.addEventListener('click', (e) => { e.preventDefault(); moveButton(); });
+            noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
         }
 
-        // --- YENİ RASTGELE KONFETİ ---
         function startConfetti() { 
-            for(let i=0; i<50; i++) {
+            for(let i=0; i<60; i++) {
                 setTimeout(() => { 
                     const h = document.createElement('div'); 
                     h.className='heart'; 
-                    h.innerHTML='💍'; 
-                    
-                    // Rastgelelikler
+                    h.innerHTML= Math.random() > 0.5 ? '💍' : '❤️'; 
                     h.style.left = Math.random() * 100 + 'vw';
-                    const randomDuration = Math.random() * 3 + 2; 
-                    h.style.animationDuration = randomDuration + 's';
-                    const randomSize = Math.random() * 20 + 20;
-                    h.style.fontSize = randomSize + 'px';
-
+                    const duration = Math.random() * 3 + 2; 
+                    h.style.animationDuration = duration + 's';
+                    h.style.fontSize = Math.random() * 20 + 20 + 'px';
                     document.body.appendChild(h); 
-                    setTimeout(() => { h.remove(); }, randomDuration * 1000);
-                }, i*150); 
+                    setTimeout(() => h.remove(), duration * 1000);
+                }, i * 100); 
             } 
         }
 

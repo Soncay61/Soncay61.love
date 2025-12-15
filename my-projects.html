@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projelerim - DreamWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #667eea; --secondary: #764ba2; --danger: #ff4757; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { background: #f4f7fa; min-height: 100vh; color: #2d3436; }
+
+        nav {
+            background: white; padding: 15px 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo { font-weight: 700; color: var(--secondary); text-decoration: none; font-size: 20px; }
+        .btn-back { color: #666; text-decoration: none; font-size: 14px; font-weight: 500; }
+
+        .container { padding: 40px 8%; max-width: 1400px; margin: 0 auto; }
+        .header-area { margin-bottom: 35px; display: flex; justify-content: space-between; align-items: center; }
+        .page-title { font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        
+        /* --- PROJE KARTI --- */
+        .project-card { 
+            background: white; border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; 
+            border: 1px solid #f0f0f0; display: flex; flex-direction: column;
+        }
+        .project-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+        .card-body { padding: 22px; flex-grow: 1; }
+        .card-body h3 { font-size: 18px; margin-bottom: 6px; color: #333; }
+        .card-meta { font-size: 12px; color: #888; margin-bottom: 20px; display: flex; justify-content: space-between; }
+
+        .card-actions { display: flex; gap: 10px; margin-top: auto; }
+        .btn-action { 
+            flex: 1; padding: 12px; border-radius: 12px; text-align: center; 
+            text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s;
+            border: none; cursor: pointer;
+        }
+        .btn-view { background: #ebf4ff; color: var(--primary); }
+        .btn-view:hover { background: var(--primary); color: white; }
+        .btn-delete { background: #fff5f5; color: var(--danger); }
+        .btn-delete:hover { background: var(--danger); color: white; }
+        
+        .empty-state { text-align: center; padding: 80px 0; grid-column: 1 / -1; }
+        .empty-state i { font-size: 60px; color: #d1d5db; margin-bottom: 20px; }
+        .empty-state p { color: #9ca3af; font-size: 18px; }
+        
+        #loading { text-align: center; width: 100%; padding: 50px; font-weight: 500; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="dashboard.html" class="logo"><i class="fas fa-magic"></i> DreamWeb</a>
+        <a href="dashboard.html" class="btn-back"><i class="fas fa-arrow-left"></i> Panele Dön</a>
+    </nav>
+
+    <div class="container">
+        <div class="header-area">
+            <h1 class="page-title"><i class="fas fa-folder-open" style="color:var(--primary)"></i> Yayındaki Projelerim</h1>
+            <a href="editor.html" style="color:var(--primary); text-decoration:none; font-weight:600; font-size:14px;"><i class="fas fa-plus"></i> Yeni Ekle</a>
+        </div>
+
+        <div id="loading"><i class="fas fa-spinner fa-spin"></i> Projelerin yükleniyor...</div>
+        
+        <div class="projects-grid" id="projectsGrid">
+            </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, user => { 
+            if(user) loadUserProjects(user.uid); 
+            else window.location.href = "login.html"; 
+        });
+
+        async function loadUserProjects(uid) {
+            const grid = document.getElementById('projectsGrid');
+            const loading = document.getElementById('loading');
+            
+            try {
+                // En yeni projeler en üstte
+                const q = query(collection(db, "proposals"), where("userId", "==", uid));
+                const querySnapshot = await getDocs(q);
+                loading.style.display = 'none';
+
+                if(querySnapshot.empty) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-plus"></i>
+                            <p>Henüz bir projen yok kral. Hadi hemen ilkini oluştur!</p>
+                            <a href="editor.html" class="btn-action btn-view" style="display:inline-block; margin-top:20px; width:auto; padding:12px 30px;">İlk Projeni Başlat</a>
+                        </div>`;
+                    return;
+                }
+
+                querySnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const date = data.createdAt?.toDate().toLocaleDateString('tr-TR') || "-";
+                    const thumb = data.images?.[0] || 'https://via.placeholder.com/400x200?text=DreamWeb';
+                    const themeText = data.theme === 'love' ? '💍 Aşk' : '🎂 Doğum Günü';
+
+                    grid.innerHTML += `
+                        <div class="project-card" id="card-${id}">
+                            <img src="${thumb}" class="card-img" alt="Proje Görseli">
+                            <div class="card-body">
+                                <h3>${data.partnerName}</h3>
+                                <div class="card-meta">
+                                    <span>${themeText}</span>
+                                    <span>${date}</span>
+                                </div>
+                                <div class="card-actions">
+                                    <a href="view.html?id=${id}" target="_blank" class="btn-action btn-view">Görüntüle</a>
+                                    <button onclick="window.deleteProject('${id}')" class="btn-action btn-delete">Sil</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (e) { 
+                console.error(e); 
+                loading.innerHTML = "Hata oluştu, lütfen sayfayı yenile.";
+            }
+        }
+
+        window.deleteProject = async (id) => {
+            if(confirm("Bu projeyi kalıcı olarak silmek istediğine emin misin? Bu işlem geri alınamaz.")) {
+                try {
+                    await deleteDoc(doc(db, "proposals", id));
+                    document.getElementById(`card-${id}`).style.opacity = '0';
+                    setTimeout(() => document.getElementById(`card-${id}`).remove(), 300);
+                } catch (err) {
+                    alert("Silme hatası: " + err.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
