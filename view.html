@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benimle Evlenir Misin?</title>
+    <title>Sürpriz!</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
+    <div id="startOverlay">
+        <button class="start-btn" id="startBtn">Dokun ve Başla ❤️</button>
+    </div>
+
     <div class="background-overlay"></div>
 
     <div class="container" id="mainCard">
         <div class="card" data-aos="zoom-in" data-aos-duration="1200">
             <div class="content">
-                <div class="ring-animation" data-aos="fade-down" data-aos-delay="400">
-                    <img src="https://pngimg.com/uploads/ring/ring_PNG26.png" alt="Tektaş Yüzük" class="ring-img">
-                </div>
+                <div id="iconWrapper" class="ring-animation" data-aos="fade-down" data-aos-delay="400"></div>
                 
-                <h1 class="title" id="mainTitle" data-aos="fade-up" data-aos-delay="600">Yükleniyor...</h1>
-                <p class="subtitle" data-aos="fade-up" data-aos-delay="800">Ömrümün geri kalanı olur musun?</p>
+                <h1 class="title" id="mainTitle"></h1>
+                <p class="subtitle" id="mainSubtitle"></p>
             </div>
             
-            <div class="buttons" data-aos="fade-up" data-aos-delay="1000">
-                <button class="btnYes" id="yesButton">EVET 💍</button>
-                <button class="btnNo" id="noButton">HAYIR 💔</button>
+            <div class="buttons" id="btnGroup">
+                <button class="btnYes" id="yesButton">EVET</button>
+                <button class="btnNo" id="noButton">HAYIR</button>
             </div>
         </div>
     </div> 
 
-    <div class="gallery-container" style="display: none;">
+    <div class="gallery-container" id="galleryLayer" style="display: none;">
         <div class="box">
             <div class="dream" id="photoGallery"></div>
         </div>
@@ -41,10 +41,7 @@
     
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-        AOS.init({
-            duration: 1000,
-            once: true // Animasyonun sadece bir kez çalışması için
-        });
+        AOS.init({ duration: 1000, once: true });
     </script>
 
     <script type="module">
@@ -64,26 +61,64 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- DAKTİLO EFEKTİ FONKSİYONU ---
+        function typeWriter(elementId, text, speed, callback) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
         async function loadSiteData() {
             const urlParams = new URLSearchParams(window.location.search);
             const docId = urlParams.get('id');
+            
+            // Varsayılan Veriler (Veritabanı yoksa bunlar görünür)
             let data = {
-                partnerName: "Prenses",
+                partnerName: "Sevgilim",
                 proposalMessage: "Sonsuza kadar EVET! 💍",
-                musicUrl: "ses/sess.mp3", 
+                theme: "love", // 'love' veya 'birthday'
+                musicUrl: "", 
                 images: Array(8).fill("https://via.placeholder.com/600")
             };
 
             if (docId) {
                 try {
                     const docSnap = await getDoc(doc(db, "proposals", docId));
-                    if (docSnap.exists()) data = docSnap.data();
+                    if (docSnap.exists()) {
+                        data = docSnap.data();
+                    }
                 } catch (error) { console.error("Veri çekme hatası:", error); }
             }
 
-            document.getElementById('mainTitle').innerText = `Benimle Evlenir Misin ${data.partnerName}?`;
+            // --- TEMA VE İÇERİK AYARLARI ---
+            const isBirthday = data.theme === 'birthday';
+
+            // İkon Seçimi (Pasta veya Yüzük)
+            const iconHtml = isBirthday ? 
+                `<div class="cake-wrapper">
+                    <div class="flame"></div>
+                    <img src="https://i.ibb.co/2Z7fVfM/cake-icon.png" class="cake-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2682/2682431.png'">
+                </div>` : 
+                `<img src="https://pngimg.com/uploads/ring/ring_PNG26.png" class="ring-img">`;
+            
+            document.getElementById('iconWrapper').innerHTML = iconHtml;
+
+            // Galeri Fotoğraflarını Yükle
             const gallery = document.getElementById('photoGallery');
-            data.images.forEach((imgUrl, index) => {
+            // Eğer resim sayısı 8'den azsa placeholder ile tamamla
+            const imagesToLoad = data.images && data.images.length > 0 ? data.images : Array(8).fill("https://picsum.photos/400/600");
+            
+            imagesToLoad.forEach((imgUrl, index) => {
                 if(index < 8) {
                     const span = document.createElement('span');
                     span.style.setProperty('--i', index + 1);
@@ -93,34 +128,70 @@
                     gallery.appendChild(span);
                 }
             });
-            initLogic(data);
+
+            // Buton Metinleri
+            document.getElementById('yesButton').innerHTML = isBirthday ? "KUTLA 🎉" : "EVET 💍";
+            document.getElementById('noButton').innerHTML = isBirthday ? "HAYIR 🎂" : "HAYIR 💔";
+
+            // --- GİRİŞ PERDESİ VE MÜZİK ---
+            document.getElementById('startBtn').addEventListener('click', () => {
+                // Müziği Başlat
+                if (data.musicUrl) {
+                    const audio = new Audio(data.musicUrl);
+                    audio.volume = 0.6;
+                    audio.play().catch(e => console.log("Ses çalma hatası:", e));
+                }
+
+                // Perdeyi Kaldır
+                const overlay = document.getElementById('startOverlay');
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 1000);
+
+                // Daktilo Efekti Başlasın
+                const titleText = isBirthday ? `İyi Ki Doğdun ${data.partnerName}!` : `Benimle Evlenir Misin ${data.partnerName}?`;
+                const subText = isBirthday ? "Nice mutlu yaşlara..." : "Ömrümün geri kalanı olur musun?";
+
+                typeWriter("mainTitle", titleText, 90, () => {
+                    typeWriter("mainSubtitle", subText, 50, () => {
+                        // Yazılar bitince butonlar görünsün
+                        document.getElementById('btnGroup').style.opacity = '1';
+                    });
+                });
+            });
+
+            initLogic(data, isBirthday);
         }
 
-        function initLogic(data) {
+        function initLogic(data, isBirthday) {
             const yesButton = document.getElementById('yesButton');
             const noButton = document.getElementById('noButton');
             const card = document.querySelector('.card'); 
             const mainContainer = document.getElementById('mainCard');
             const title = document.querySelector('.title');
             
-            let isYesClicked = false, escapeCount = 0; 
+            let isYesClicked = false;
+            let escapeCount = 0; 
 
+            // Troll Hayır Butonu Sözleri
+            const noTexts = isBirthday ? 
+                ["Emin misin?", "Pasta eridi!", "Yapma be!", "Hadi üfle!", "Tamam pes :)"] : 
+                ["Emin misin?", "Bir daha düşün?", "Son kararın mı?", "Kırma kalbimi...", "Basamazsın ki :)"];
+
+            // --- EVET BUTONU ---
             yesButton.addEventListener('click', function () {
                 if (!isYesClicked) {
                     isYesClicked = true;
-                    const audio = new Audio(data.musicUrl); 
-                    audio.volume = 0.5; 
-                    audio.play().catch(e => console.log("Ses çalma hatası:", e));
                     
-                    startConfetti();
+                    // Havai Fişek / Konfeti
+                    startConfetti(isBirthday ? '🎉' : '❤️');
                     
                     title.innerText = data.proposalMessage;
-                    document.querySelector('.subtitle').textContent = 'Seni dünyanın en mutlu insanı yapacağım...';
-                    document.querySelector('.buttons').style.display = 'none';
+                    document.getElementById('mainSubtitle').innerText = isBirthday ? "İyi ki varsın!" : 'Seni dünyanın en mutlu insanı yapacağım...';
+                    document.getElementById('btnGroup').style.display = 'none';
                     
                     setTimeout(() => {
                         mainContainer.style.opacity = "0";
-                        const galleryCont = document.querySelector('.gallery-container');
+                        const galleryCont = document.getElementById('galleryLayer');
                         galleryCont.style.display = 'flex'; 
                         setTimeout(() => { 
                             galleryCont.style.opacity = "1"; 
@@ -130,38 +201,45 @@
                 }
             });
 
+            // --- HAYIR BUTONU KAÇIRMA ---
             function moveButton() {
-                escapeCount++; 
-                if (escapeCount >= 5) { 
+                if (escapeCount < 5) {
+                    // Yazıyı değiştir
+                    noButton.innerText = noTexts[escapeCount];
+                    
+                    const rect = card.getBoundingClientRect();
+                    // Rastgele koordinat (Kartın dışına çıkmasın diye sınırlandı)
+                    const x = Math.max(10, Math.random() * (rect.width - 120));
+                    const y = Math.max(10, Math.random() * (rect.height - 50));
+                    
+                    noButton.style.position = 'absolute'; 
+                    noButton.style.left = x + 'px'; 
+                    noButton.style.top = y + 'px';
+                    
+                    escapeCount++; 
+                } else {
                     noButton.style.display = 'none'; 
-                    title.innerText = "Naz yapma prenses! 😉"; 
-                    return; 
+                    title.innerText = isBirthday ? "Pastayı üfle artık! 🎂" : "Naz yapma prenses! 😉"; 
                 }
-                const rect = card.getBoundingClientRect();
-                const x = Math.max(10, Math.random() * (rect.width - 120));
-                const y = Math.max(10, Math.random() * (rect.height - 50));
-                noButton.style.position = 'absolute'; 
-                noButton.style.left = x + 'px'; 
-                noButton.style.top = y + 'px';
             }
 
             noButton.addEventListener('mouseover', moveButton);
             noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
         }
 
-        function startConfetti() { 
-            for(let i=0; i<60; i++) {
+        function startConfetti(emoji) { 
+            for(let i=0; i<80; i++) {
                 setTimeout(() => { 
                     const h = document.createElement('div'); 
                     h.className='heart'; 
-                    h.innerHTML= Math.random() > 0.5 ? '💍' : '❤️'; 
+                    h.innerHTML= Math.random() > 0.5 ? emoji : '✨'; 
                     h.style.left = Math.random() * 100 + 'vw';
                     const duration = Math.random() * 3 + 2; 
                     h.style.animationDuration = duration + 's';
                     h.style.fontSize = Math.random() * 20 + 20 + 'px';
                     document.body.appendChild(h); 
                     setTimeout(() => h.remove(), duration * 1000);
-                }, i * 100); 
+                }, i * 80); 
             } 
         }
 
