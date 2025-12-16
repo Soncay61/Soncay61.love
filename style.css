@@ -226,13 +226,13 @@ button {
     z-index: 100;
     opacity: 0;
     transition: opacity 2s ease;
-    perspective: 2200px;
+    perspective: 2500px;
 }
 
 .box {
     position: relative;
-    width: 260px;
-    height: 340px;
+    width: 320px;
+    height: 450px;
     transform-style: preserve-3d;
     transform: rotateX(0deg); /* Düz bakış */
 }
@@ -317,6 +317,7 @@ button {
     }
     .gallery-container { perspective: 800px; }
 }
+
 
 
 
