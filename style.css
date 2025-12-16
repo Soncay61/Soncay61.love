@@ -226,7 +226,7 @@ button {
     z-index: 100;
     opacity: 0;
     transition: opacity 2s ease;
-    perspective: 2000px;
+    perspective: 2200px;
 }
 
 .box {
@@ -317,3 +317,4 @@ button {
     }
     .gallery-container { perspective: 800px; }
 }
+
