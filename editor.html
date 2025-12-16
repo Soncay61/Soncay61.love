@@ -22,7 +22,7 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center; /* Merkeze aldık */
+            align-items: center; 
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -37,12 +37,8 @@
         }
 
         .bg-particle {
-            position: fixed;
-            bottom: -50px;
-            color: rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-            z-index: 0;
-            will-change: transform;
+            position: fixed; bottom: -50px; color: rgba(255, 255, 255, 0.4);
+            pointer-events: none; z-index: 0; will-change: transform;
         }
 
         @keyframes floatUp {
@@ -51,56 +47,72 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- DAHA KÜÇÜK WRAPPER --- */
+        /* --- WRAPPER --- */
         .editor-wrapper { width: 100%; max-width: 650px; z-index: 10; position: relative; }
 
-        /* --- KOMPAKT GLASS PANEL --- */
+        /* --- GLASS PANEL --- */
         .editor-container { 
-            background: rgba(255, 255, 255, 0.92); 
-            backdrop-filter: blur(12px); 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(15px); 
             border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 22px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
             overflow: hidden; 
         }
 
-        .stepper-header { display: flex; justify-content: space-between; margin-bottom: 20px; position: relative; padding: 0 40px; }
-        .stepper-header::before { content: ""; position: absolute; top: 50%; left: 40px; right: 40px; height: 2px; background: rgba(0,0,0,0.05); z-index: 1; transform: translateY(-50%); }
-        .step-circle { width: 32px; height: 32px; background: white; border: 2px solid #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; font-size: 13px; font-weight: 600; color: #999; }
-        .step-circle.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 0 10px rgba(102,126,234,0.4); }
+        .stepper-header { display: flex; justify-content: space-between; margin-bottom: 20px; position: relative; padding: 0 30px; margin-top: 25px; }
+        .stepper-header::before { content: ""; position: absolute; top: 50%; left: 30px; right: 30px; height: 3px; background: #eee; z-index: 1; transform: translateY(-50%); }
+        
+        .step-circle { 
+            width: 35px; height: 35px; background: white; border: 3px solid #eee; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; z-index: 2; 
+            font-size: 14px; font-weight: 700; color: #ccc; transition: 0.3s;
+        }
+        .step-circle.active { background: var(--primary); border-color: var(--primary); color: white; transform: scale(1.1); box-shadow: 0 0 15px rgba(102,126,234,0.4); }
         .step-circle.completed { background: var(--success); border-color: var(--success); color: white; }
 
-        .step-content { padding: 30px; display: none; }
+        .step-content { padding: 0 30px 30px 30px; display: none; }
         .step-content.active { display: block; animation: slideIn 0.4s ease; }
 
-        h3 { font-size: 18px; margin-bottom: 15px; color: #333; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 20px; margin-bottom: 20px; color: #2d3436; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
 
-        /* --- KOMPAKT FORM ELEMANLARI --- */
+        /* --- FORM ELEMANLARI --- */
         .form-group { margin-bottom: 18px; }
-        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #555; }
-        .input-style { width: 100%; padding: 11px 15px; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 10px; outline: none; transition: 0.3s; font-size: 14px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #475569; }
+        .input-style { width: 100%; padding: 12px 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; transition: 0.3s; font-size: 14px; }
         .input-style:focus { border-color: var(--primary); background: white; }
 
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .theme-card { background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .theme-card.selected { border-color: var(--primary); background: #f0f7ff; }
-        .theme-card i { font-size: 24px; margin-bottom: 8px; display: block; }
-        .theme-card strong { font-size: 13px; }
+        /* TEMA KARTLARI */
+        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .theme-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .theme-card:hover { transform: translateY(-3px); }
+        .theme-card.selected { border-color: var(--primary); background: #f0f7ff; box-shadow: 0 5px 15px rgba(102,126,234,0.2); }
+        .theme-card i { font-size: 28px; margin-bottom: 8px; display: block; }
 
+        /* HİKAYE KUTULARI */
+        .timeline-editor-box {
+            background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative;
+        }
+        .timeline-editor-box h4 { font-size: 13px; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* FOTOĞRAF GRID */
         .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .photo-slot { aspect-ratio: 1; background: #fff; border: 2px dashed #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
+        .photo-slot { aspect-ratio: 1; background: #f8fafc; border: 2px dashed #cbd5e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; transition: 0.2s; }
+        .photo-slot:hover { border-color: var(--primary); background: #f0f7ff; }
         .photo-slot.has-img { border-style: solid; border-color: var(--success); }
         .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-        .delete-btn { position: absolute; top: 3px; right: 3px; background: #ff4d4d; color: white; border: none; width: 18px; height: 18px; border-radius: 50%; display: none; cursor: pointer; font-size: 10px; z-index: 5; }
+        .delete-btn { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.8); color: white; border: none; width: 20px; height: 20px; border-radius: 50%; display: none; cursor: pointer; font-size: 12px; z-index: 5; }
 
-        .footer-nav { padding: 15px 30px; background: #fbfcfe; display: flex; justify-content: space-between; border-top: 1px solid #f1f5f9; }
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; font-size: 14px; }
-        .btn-next { background: var(--primary); color: white; }
+        /* ALT BUTONLAR */
+        .footer-nav { padding: 20px 30px; background: #f8fafc; display: flex; justify-content: space-between; border-top: 1px solid #e2e8f0; }
+        .btn { padding: 12px 25px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(102,126,234,0.3); }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
         .btn-prev { background: #e2e8f0; color: #64748b; }
-        .btn-submit { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; }
+        .btn-prev:hover { background: #cbd5e0; }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 500px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } .stepper-header { padding: 0 20px; } }
+        @media (max-width: 500px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } .stepper-header { padding: 0 15px; } .step-content { padding: 0 20px 20px 20px; } }
     </style>
 </head>
 <body>
@@ -110,53 +122,106 @@
         <div class="step-circle active" id="dot1">1</div>
         <div class="step-circle" id="dot2">2</div>
         <div class="step-circle" id="dot3">3</div>
+        <div class="step-circle" id="dot4">4</div>
     </div>
 
     <div class="editor-container">
+        
         <div class="step-content active" id="step1">
-            <h3><i class="fas fa-magic" style="color:var(--primary)"></i> Tasarım Bilgileri</h3>
+            <h3><i class="fas fa-heart" style="color:#e74c3c"></i> Temel Bilgiler</h3>
+            
             <div class="form-group">
-                <label>Konsept</label>
+                <label>Konsept Seç</label>
                 <div class="theme-grid">
                     <div class="theme-card selected" onclick="selectTheme('love', this)">
-                        <i class="fas fa-ring" style="color:#e74c3c"></i><strong>Aşk Sayfası</strong>
+                        <i class="fas fa-ring" style="color:#e74c3c"></i><strong>Aşk / Teklif</strong>
                     </div>
                     <div class="theme-card" onclick="selectTheme('birthday', this)">
                         <i class="fas fa-birthday-cake" style="color:#f1c40f"></i><strong>Doğum Günü</strong>
                     </div>
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Partner Adı</label>
-                <input type="text" id="partnerName" class="input-style" placeholder="Örn: Ruh İkizim...">
+                <label>Partnerinin Adı</label>
+                <input type="text" id="partnerName" class="input-style" placeholder="Örn: Ayşem, Canım...">
             </div>
+
+            <div class="form-group">
+                <label>İlişki Başlangıç Tarihi (Sayaç İçin)</label>
+                <input type="datetime-local" id="relationshipDate" class="input-style">
+                <small style="color:#888; font-size:11px;">Buraya girdiğin tarih ve saatten itibaren sayaç çalışacak.</small>
+            </div>
+
             <div class="form-group" style="margin-bottom: 0;">
-                <label>Mesajın</label>
-                <textarea id="proposalMessage" class="input-style" rows="2" placeholder="Ona ne demek istersin?"></textarea>
+                <label>Ana Mesaj (Evet/Hayır Ekranı)</label>
+                <textarea id="proposalMessage" class="input-style" rows="2" placeholder="Örn: Benimle evlenir misin?"></textarea>
             </div>
         </div>
 
         <div class="step-content" id="step2">
-            <h3><i class="fas fa-camera" style="color:var(--primary)"></i> Medya Yükle</h3>
+            <h3><i class="fas fa-history" style="color:#f1c40f"></i> Hikaye Tüneli</h3>
+            <p style="font-size:13px; color:#666; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
+                Aşağıdaki 3 önemli anı kendi hikayenize göre düzenleyebilirsin. Varsayılan olarak güzel sözler yazdık.
+            </p>
+
+            <div class="timeline-editor-box">
+                <h4><i class="fas fa-flag-checkered"></i> 1. Başlangıç (Tanışma)</h4>
+                <div class="form-group">
+                    <input type="text" id="t1_title" class="input-style" value="Hikayemiz Başladı" placeholder="Başlık">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <textarea id="t1_desc" class="input-style" rows="2">Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü...</textarea>
+                </div>
+            </div>
+
+            <div class="timeline-editor-box">
+                <h4><i class="fas fa-camera"></i> 2. İlk Anı / İlk Bakış</h4>
+                <div class="form-group">
+                    <input type="text" id="t2_title" class="input-style" value="O Büyülü An" placeholder="Başlık">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <textarea id="t2_desc" class="input-style" rows="2">Gözlerine ilk baktığımda evimi bulduğumu hissettim.</textarea>
+                </div>
+            </div>
+
+            <div class="timeline-editor-box">
+                <h4><i class="fas fa-infinity"></i> 3. Bugün / Teklif Günü</h4>
+                <div class="form-group">
+                    <input type="text" id="t3_title" class="input-style" value="Sonsuzluğa İlk Adım" placeholder="Başlık">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <textarea id="t3_desc" class="input-style" rows="2">Ve bugün, ömrümü seninle birleştirme sözü veriyorum.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-content" id="step3">
+            <h3><i class="fas fa-photo-video" style="color:var(--secondary)"></i> Medya Yükle</h3>
+            
             <div class="form-group">
                 <label>Arka Plan Müziği</label>
-                <input type="file" id="musicFile" accept="audio/*" class="input-style">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="file" id="musicFile" accept="audio/*" class="input-style">
+                </div>
             </div>
+
             <div class="form-group" style="margin-bottom: 0;">
-                <label>Fotoğraflar (8 Adet)</label>
+                <label>Fotoğraflar (8 Adet Seçin)</label>
                 <input type="file" id="bulkInput" multiple accept="image/*" style="display:none;">
-                <button class="btn" onclick="document.getElementById('bulkInput').click()" style="width:100%; margin-bottom:12px; border:1px solid #cbd5e0; color:#475569; background:#fff;">
-                    <i class="fas fa-images"></i> Toplu Seç
+                <button class="btn" onclick="document.getElementById('bulkInput').click()" style="width:100%; margin-bottom:15px; border:2px dashed #cbd5e0; color:#64748b; background:#f8fafc; justify-content:center;">
+                    <i class="fas fa-plus-circle"></i> Toplu Fotoğraf Seç
                 </button>
+                
                 <div class="photo-grid">
                     <script>
                         for(let i=1; i<=8; i++) {
                             document.write(`
                                 <div class="photo-slot" id="slot${i}" onclick="triggerInput(${i})">
                                     <input type="file" class="photo-input" id="input${i}" accept="image/*" style="display:none;" onchange="handleSingleFile(this, ${i})">
-                                    <i class="fas fa-plus" style="color:#cbd5e0; font-size:12px;"></i>
+                                    <i class="fas fa-image" style="color:#cbd5e0; font-size:18px;"></i>
                                     <img src="" style="display:none;">
-                                    <button class="delete-btn" onclick="removeImage(event, ${i})">×</button>
+                                    <button class="delete-btn" onclick="removeImage(event, ${i})"><i class="fas fa-times"></i></button>
                                 </div>
                             `);
                         }
@@ -165,18 +230,23 @@
             </div>
         </div>
 
-        <div class="step-content" id="step3">
-            <div style="text-align:center; padding:10px;">
-                <i class="fas fa-check-circle" style="font-size:45px; color:var(--success); margin-bottom:15px;"></i>
-                <h2>Hazırsın!</h2>
-                <p style="color:#64748b; font-size:14px; margin-top:5px;">Saniyeler içinde aşk sayfan yayında olacak.</p>
-                <div id="statusMessage" style="margin-top:15px; font-size:14px;"></div>
+        <div class="step-content" id="step4">
+            <div style="text-align:center; padding:30px 10px;">
+                <div style="width:80px; height:80px; background:#dcfce7; color:#22c55e; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:40px;">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 style="margin-bottom:10px;">Her Şey Hazır!</h2>
+                <p style="color:#64748b; font-size:15px; line-height:1.6;">
+                    Bilgileri girdin, hikayeni yazdın ve fotoğrafları seçtin.<br>
+                    Şimdi sihri başlatma zamanı.
+                </p>
+                <div id="statusMessage" style="margin-top:20px; font-weight:600; font-size:14px; color:var(--primary); min-height:20px;"></div>
             </div>
         </div>
 
         <div class="footer-nav">
-            <button class="btn btn-prev" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden;">Geri</button>
-            <button class="btn btn-next" id="nextBtn" onclick="changeStep(1)">Devam Et</button>
+            <button class="btn btn-prev" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden;"><i class="fas fa-arrow-left"></i> Geri</button>
+            <button class="btn btn-next" id="nextBtn" onclick="changeStep(1)">Devam Et <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 </div>
@@ -205,7 +275,7 @@
 
     onAuthStateChanged(auth, u => { if(u) currentUser = u; else window.location.href="login.html"; });
 
-    // --- KALİTELİ ANİMASYON MOTORU ---
+    // --- ARKA PLAN EFEKTLERİ ---
     function startParticleFlow() {
         const symbols = ['❤️', '💍', '💖', '✨'];
         setInterval(() => {
@@ -222,31 +292,57 @@
     }
     startParticleFlow();
 
-    // --- STEP LOGIC ---
+    // --- NAVIGASYON MANTIĞI ---
     let currentStep = 1;
     let selectedTheme = 'love';
+    const totalSteps = 4;
 
     window.changeStep = (n) => {
         if (n === 1 && !validateStep()) return;
         currentStep += n;
-        if (currentStep > 3) { startCreation(); return; }
+        
+        if (currentStep > totalSteps) { 
+            startCreation(); 
+            return; 
+        }
+        
         updateUI();
     };
 
     function validateStep() {
-        if (currentStep === 1 && !document.getElementById('partnerName').value.trim()) { alert("İsim yazmalısın!"); return false; }
-        if (currentStep === 2 && document.querySelectorAll('.photo-slot.has-img').length === 0) { alert("En az 1 fotoğraf!"); return false; }
+        if (currentStep === 1) {
+            const name = document.getElementById('partnerName').value.trim();
+            const date = document.getElementById('relationshipDate').value;
+            if (!name) { alert("Partnerinin ismini yazmalısın!"); return false; }
+            if (!date) { alert("Sayaç için ilişki tarihini seçmelisin!"); return false; }
+        }
+        if (currentStep === 3) {
+            if (document.querySelectorAll('.photo-slot.has-img').length === 0) { 
+                alert("En az 1 fotoğraf yüklemelisin!"); 
+                return false; 
+            }
+        }
         return true;
     }
 
     function updateUI() {
         document.querySelectorAll('.step-content').forEach((s, i) => s.classList.toggle('active', i === currentStep - 1));
+        
         document.querySelectorAll('.step-circle').forEach((d, i) => {
             d.classList.toggle('active', i === currentStep - 1);
             d.classList.toggle('completed', i < currentStep - 1);
         });
+
         document.getElementById('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-        document.getElementById('nextBtn').innerText = currentStep === 3 ? "OLUŞTUR" : "Devam Et";
+        
+        const nextBtn = document.getElementById('nextBtn');
+        if(currentStep === totalSteps) {
+            nextBtn.innerHTML = 'OLUŞTUR <i class="fas fa-magic"></i>';
+            nextBtn.style.background = "linear-gradient(to right, #48bb78, #38a169)";
+        } else {
+            nextBtn.innerHTML = 'Devam Et <i class="fas fa-arrow-right"></i>';
+            nextBtn.style.background = ""; // Reset to default CSS
+        }
     }
 
     window.selectTheme = (t, el) => {
@@ -255,7 +351,7 @@
         el.classList.add('selected');
     };
 
-    // --- PHOTO LOGIC ---
+    // --- FOTOĞRAF MANTIĞI ---
     window.triggerInput = (i) => document.getElementById(`input${i}`).click();
     window.handleSingleFile = (input, i) => { if(input.files[0]) showPreview(input.files[0], i); };
     
@@ -292,45 +388,76 @@
         document.getElementById(`input${i}`).value = "";
     };
 
-    // --- FIREBASE SAVE ---
+    // --- FIREBASE KAYIT (GÜNCELLENDİ) ---
     async function startCreation() {
         const status = document.getElementById('statusMessage');
         const nextBtn = document.getElementById('nextBtn');
         nextBtn.disabled = true;
-        status.innerHTML = "⏳ Sihir yapılıyor...";
+        status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Site oluşturuluyor, lütfen bekle...';
 
         try {
-            let musicUrl = selectedTheme === 'birthday' ? "https://cdn.pixabay.com/download/audio/2023/01/25/audio_245220757a.mp3" : "ses/sess.mp3";
+            // Müzik Yükle
+            let musicUrl = selectedTheme === 'birthday' ? "" : "";
             const musicFile = document.getElementById('musicFile').files[0];
             if(musicFile) {
-                const mRef = ref(storage, `users/${currentUser.uid}/${Date.now()}`);
+                status.innerHTML = '🎵 Müzik sunucuya yükleniyor...';
+                const mRef = ref(storage, `users/${currentUser.uid}/music_${Date.now()}`);
                 await uploadBytes(mRef, musicFile);
                 musicUrl = await getDownloadURL(mRef);
             }
 
+            // Resimler
             const imageUrls = [];
             const photoSlots = document.querySelectorAll('.photo-input');
             for(let i=0; i<photoSlots.length; i++) {
                 const file = photoSlots[i].files[0];
                 if(file) {
-                    status.innerHTML = `📸 Resim ${imageUrls.length+1} yükleniyor...`;
+                    status.innerHTML = `📸 Resimler işleniyor (${i+1}/${photoSlots.length})...`;
                     const iRef = ref(storage, `users/${currentUser.uid}/img_${Date.now()}_${i}`);
                     await uploadBytes(iRef, file);
                     imageUrls.push(await getDownloadURL(iRef));
                 }
             }
 
+            // Veritabanı Kaydı (YENİ ALANLAR İLE)
+            status.innerHTML = '💾 Hikayeniz kaydediliyor...';
+            
             await addDoc(collection(db, "proposals"), {
-                userId: currentUser.uid, theme: selectedTheme,
+                userId: currentUser.uid, 
+                theme: selectedTheme,
                 partnerName: document.getElementById('partnerName').value,
-                proposalMessage: document.getElementById('proposalMessage').value,
-                musicUrl: musicUrl, images: imageUrls, createdAt: new Date()
+                proposalMessage: document.getElementById('proposalMessage').value || "Sonsuza kadar EVET!",
+                
+                // YENİ: İlişki Tarihi
+                relationshipDate: document.getElementById('relationshipDate').value,
+                
+                // YENİ: Timeline Verileri
+                timeline: [
+                    { 
+                        title: document.getElementById('t1_title').value || "Hikayemiz Başladı", 
+                        desc: document.getElementById('t1_desc').value || "Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü..." 
+                    },
+                    { 
+                        title: document.getElementById('t2_title').value || "O Büyülü An", 
+                        desc: document.getElementById('t2_desc').value || "Gözlerine ilk baktığımda evimi bulduğumu hissettim." 
+                    },
+                    { 
+                        title: document.getElementById('t3_title').value || "Sonsuzluğa İlk Adım", 
+                        desc: document.getElementById('t3_desc').value || "Ve bugün, ömrümü seninle birleştirme sözü veriyorum." 
+                    }
+                ],
+                
+                musicUrl: musicUrl, 
+                images: imageUrls, 
+                createdAt: new Date()
             });
 
-            status.innerHTML = "✅ Harika! Yönlendiriliyor...";
-            setTimeout(() => window.location.href="dashboard.html", 1500);
+            status.innerHTML = '<span style="color:var(--success)">✅ Başarılı! Paneline yönlendiriliyorsun...</span>';
+            setTimeout(() => window.location.href="dashboard.html", 2000);
+
         } catch(err) {
-            alert(err.message);
+            console.error(err);
+            status.innerHTML = `<span style="color:#e74c3c">Hata: ${err.message}</span>`;
             nextBtn.disabled = false;
         }
     }
