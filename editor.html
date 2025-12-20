@@ -3,511 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DreamWeb - Editör Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>DreamWeb Studio - Editör</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --success: #48bb78;
+            --primary: #6366f1; /* Modern İndigo */
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --surface: #ffffff;
+            --background: #f8fafc;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --radius: 16px;
+            --shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-        /* --- ANİMASYONLU ARKA PLAN --- */
-        body { 
-            margin: 0;
-            padding: 10px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--background);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center; 
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            overflow-x: hidden;
+            align-items: center;
+            padding: 20px;
+            /* Hafif mesh background */
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
+            background-size: 100% 100%;
+        }
+
+        /* --- ANA KAPASİTE --- */
+        .studio-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            overflow: hidden;
+            min-height: 650px;
             position: relative;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- SOL PANEL (SIDEBAR / STEPPER) --- */
+        .studio-sidebar {
+            width: 280px;
+            background: #f1f5f9;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
         }
 
-        .bg-particle {
-            position: fixed; bottom: -50px; color: rgba(255, 255, 255, 0.4);
-            pointer-events: none; z-index: 0; will-change: transform;
+        .brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.6; }
-            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        .steps-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
         }
 
-        /* --- WRAPPER --- */
-        .editor-wrapper { width: 100%; max-width: 650px; z-index: 10; position: relative; }
-
-        /* --- GLASS PANEL --- */
-        .editor-container { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(15px); 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 22px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
-            overflow: hidden; 
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 14px;
+            transition: 0.3s;
+            position: relative;
         }
 
-        .stepper-header { display: flex; justify-content: space-between; margin-bottom: 20px; position: relative; padding: 0 30px; margin-top: 25px; }
-        .stepper-header::before { content: ""; position: absolute; top: 50%; left: 30px; right: 30px; height: 3px; background: #eee; z-index: 1; transform: translateY(-50%); }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.3s;
+            color: #94a3b8;
+        }
+
+        .step-item.active { color: var(--text-main); font-weight: 600; }
+        .step-item.active .step-number { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+        .step-item.completed .step-number { background: var(--success); color: white; }
         
-        .step-circle { 
-            width: 35px; height: 35px; background: white; border: 3px solid #eee; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; z-index: 2; 
-            font-size: 14px; font-weight: 700; color: #ccc; transition: 0.3s;
+        /* Bağlantı çizgisi */
+        .step-item:not(:last-child)::after {
+            content: ''; position: absolute; left: 16px; top: 32px;
+            width: 2px; height: 18px; background: #e2e8f0;
         }
-        .step-circle.active { background: var(--primary); border-color: var(--primary); color: white; transform: scale(1.1); box-shadow: 0 0 15px rgba(102,126,234,0.4); }
-        .step-circle.completed { background: var(--success); border-color: var(--success); color: white; }
 
-        .step-content { padding: 0 30px 30px 30px; display: none; }
-        .step-content.active { display: block; animation: slideIn 0.4s ease; }
-
-        h3 { font-size: 20px; margin-bottom: 20px; color: #2d3436; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
-
-        /* --- FORM ELEMANLARI --- */
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #475569; }
-        .input-style { width: 100%; padding: 12px 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; transition: 0.3s; font-size: 14px; }
-        .input-style:focus { border-color: var(--primary); background: white; }
-
-        /* TEMA KARTLARI */
-        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .theme-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .theme-card:hover { transform: translateY(-3px); }
-        .theme-card.selected { border-color: var(--primary); background: #f0f7ff; box-shadow: 0 5px 15px rgba(102,126,234,0.2); }
-        .theme-card i { font-size: 28px; margin-bottom: 8px; display: block; }
-
-        /* HİKAYE KUTULARI */
-        .timeline-editor-box {
-            background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative;
+        /* --- SAĞ PANEL (İÇERİK) --- */
+        .studio-content {
+            flex: 1;
+            padding: 40px 50px;
+            position: relative;
+            overflow-y: auto;
+            max-height: 700px;
         }
-        .timeline-editor-box h4 { font-size: 13px; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* FOTOĞRAF GRID */
-        .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .photo-slot { aspect-ratio: 1; background: #f8fafc; border: 2px dashed #cbd5e0; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; transition: 0.2s; }
-        .photo-slot:hover { border-color: var(--primary); background: #f0f7ff; }
-        .photo-slot.has-img { border-style: solid; border-color: var(--success); }
-        .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
-        .delete-btn { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.8); color: white; border: none; width: 20px; height: 20px; border-radius: 50%; display: none; cursor: pointer; font-size: 12px; z-index: 5; }
+        .close-btn {
+            position: absolute; top: 25px; right: 25px;
+            color: var(--text-light); font-size: 20px;
+            cursor: pointer; transition: 0.2s;
+            background: #f1f5f9; width: 36px; height: 36px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+        }
+        .close-btn:hover { background: #ffe4e6; color: #f43f5e; }
 
-        /* ALT BUTONLAR */
-        .footer-nav { padding: 20px 30px; background: #f8fafc; display: flex; justify-content: space-between; border-top: 1px solid #e2e8f0; }
-        .btn { padding: 12px 25px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(102,126,234,0.3); }
-        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
-        .btn-prev { background: #e2e8f0; color: #64748b; }
-        .btn-prev:hover { background: #cbd5e0; }
+        h2 { font-family: 'Poppins', sans-serif; font-size: 24px; margin-bottom: 10px; color: var(--text-main); }
+        p.subtitle { color: var(--text-light); font-size: 14px; margin-bottom: 30px; line-height: 1.5; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 500px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } .stepper-header { padding: 0 15px; } .step-content { padding: 0 20px 20px 20px; } }
+        /* FORM ELEMANLARI */
+        .form-group { margin-bottom: 24px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        
+        .input-style {
+            width: 100%; padding: 14px 16px 14px 45px;
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 12px; font-size: 15px; color: var(--text-main);
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .input-style:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+        textarea.input-style { resize: vertical; min-height: 100px; padding-left: 16px; }
+
+        /* TEMA ROZETİ */
+        .theme-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px; background: #eef2ff; color: var(--primary);
+            border-radius: 50px; font-size: 13px; font-weight: 600;
+            margin-bottom: 20px; border: 1px solid #c7d2fe;
+        }
+
+        /* TIMELINE STİLİ */
+        .timeline-box {
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px; margin-bottom: 15px;
+            position: relative; transition: 0.2s;
+        }
+        .timeline-box:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .timeline-box h4 { font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; }
+
+        /* MEDYA GRID */
+        .media-upload-area {
+            border: 2px dashed var(--border); border-radius: 16px;
+            padding: 20px; text-align: center; margin-bottom: 20px;
+            cursor: pointer; transition: 0.2s; background: #f8fafc;
+        }
+        .media-upload-area:hover { border-color: var(--primary); background: #eef2ff; }
+        
+        .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 15px; }
+        .photo-slot {
+            aspect-ratio: 1; border-radius: 12px; overflow: hidden;
+            background: #f1f5f9; position: relative; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-slot i { color: #cbd5e0; font-size: 20px; }
+        .photo-slot:hover { border-color: var(--primary); }
+        .delete-btn {
+            position: absolute; top: 5px; right: 5px;
+            background: rgba(0,0,0,0.6); color: white; border: none;
+            width: 22px; height: 22px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+
+        /* BUTTONS */
+        .footer-actions {
+            margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn {
+            padding: 12px 28px; border-radius: 10px; font-weight: 600;
+            font-size: 14px; cursor: pointer; border: none; transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-ghost { background: transparent; color: var(--text-light); }
+        .btn-ghost:hover { color: var(--text-main); background: #f1f5f9; }
+
+        /* STEP CONTENT VISIBILITY */
+        .step-content { display: none; animation: fadeIn 0.4s ease; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* MOBİL UYUM */
+        @media (max-width: 800px) {
+            .studio-wrapper { flex-direction: column; height: 100vh; max-height: none; border-radius: 0; }
+            .studio-sidebar { width: 100%; padding: 20px; flex-direction: row; align-items: center; justify-content: space-between; height: 80px; border-bottom: 1px solid var(--border); border-right: none; }
+            .brand { margin-bottom: 0; font-size: 18px; }
+            .steps-nav { flex-direction: row; gap: 10px; }
+            .step-text { display: none; } /* Mobilde sadece yuvarlak numaralar kalsın */
+            .step-item:not(:last-child)::after { display: none; }
+            .studio-content { padding: 20px; }
+            .photo-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
 
-<div class="editor-wrapper">
-    <div class="stepper-header">
-        <div class="step-circle active" id="dot1">1</div>
-        <div class="step-circle" id="dot2">2</div>
-        <div class="step-circle" id="dot3">3</div>
-        <div class="step-circle" id="dot4">4</div>
-    </div>
-
-    <div class="editor-container">
-        
-        <div class="step-content active" id="step1">
-            <h3><i class="fas fa-heart" style="color:#e74c3c"></i> Temel Bilgiler</h3>
+    <div class="studio-wrapper">
+        <aside class="studio-sidebar">
+            <div class="brand">
+                <i class="fas fa-layer-group" style="color:var(--primary)"></i> DreamWeb
+            </div>
             
-            <div class="form-group">
-                <label>Konsept Seç (İçerik Buna Göre Değişir)</label>
-                <div class="theme-grid">
-                    <div class="theme-card selected" onclick="selectTheme('love', this)">
-                        <i class="fas fa-ring" style="color:#e74c3c"></i><strong>Aşk / Teklif</strong>
+            <div class="steps-nav">
+                <div class="step-item active" id="dot1">
+                    <div class="step-number">1</div>
+                    <span class="step-text">Temel Bilgiler</span>
+                </div>
+                <div class="step-item" id="dot2">
+                    <div class="step-number">2</div>
+                    <span class="step-text">Hikaye Tüneli</span>
+                </div>
+                <div class="step-item" id="dot3">
+                    <div class="step-number">3</div>
+                    <span class="step-text">Görsel & Medya</span>
+                </div>
+                <div class="step-item" id="dot4">
+                    <div class="step-number"><i class="fas fa-check"></i></div>
+                    <span class="step-text">Yayınla</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="studio-content">
+            <a href="dashboard.html" class="close-btn"><i class="fas fa-times"></i></a>
+
+            <div class="step-content active" id="step1">
+                <div class="theme-badge" id="themeInfoBadge">
+                    <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                </div>
+                <h2>Projeye Başlayalım</h2>
+                <p class="subtitle">Özel sayfanız için gerekli olan temel bilgileri aşağıya girin.</p>
+
+                <div class="form-group">
+                    <label id="lblPartner">İsim</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="partnerName" class="input-style" placeholder="Örn: Ayşe">
                     </div>
-                    <div class="theme-card" onclick="selectTheme('birthday', this)">
-                        <i class="fas fa-birthday-cake" style="color:#f1c40f"></i><strong>Doğum Günü</strong>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblDate">Tarih</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="datetime-local" id="relationshipDate" class="input-style">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblMsg">Ana Mesaj</label>
+                    <textarea id="proposalMessage" class="input-style" placeholder="Sayfanın en dikkat çekici mesajı..."></textarea>
+                </div>
+            </div>
+
+            <div class="step-content" id="step2">
+                <h2>Hikayenizi Anlatın</h2>
+                <p class="subtitle">Ziyaretçiler aşağı kaydırdıkça görünecek 3 önemli anı belirleyin.</p>
+
+                <div class="timeline-box">
+                    <h4><i class="fas fa-flag"></i> 1. Başlangıç</h4>
+                    <input type="text" id="t1_title" class="input-style" style="margin-bottom:10px; font-weight:600;" placeholder="Başlık">
+                    <textarea id="t1_desc" class="input-style" rows="2" placeholder="O anı anlat..."></textarea>
+                </div>
+
+                <div class="timeline-box">
+                    <h4><i class="fas fa-heart"></i> 2. Gelişme</h4>
+                    <input type="text" id="t2_title" class="input-style" style="margin-bottom:10px; font-weight:600;" placeholder="Başlık">
+                    <textarea id="t2_desc" class="input-style" rows="2" placeholder="O anı anlat..."></textarea>
+                </div>
+
+                <div class="timeline-box">
+                    <h4><i class="fas fa-infinity"></i> 3. Final</h4>
+                    <input type="text" id="t3_title" class="input-style" style="margin-bottom:10px; font-weight:600;" placeholder="Başlık">
+                    <textarea id="t3_desc" class="input-style" rows="2" placeholder="O anı anlat..."></textarea>
+                </div>
+            </div>
+
+            <div class="step-content" id="step3">
+                <h2>Medya Ekle</h2>
+                <p class="subtitle">Sayfanızı canlandırmak için müzik ve fotoğraflar ekleyin.</p>
+
+                <div class="form-group">
+                    <label>Arka Plan Müziği</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-music"></i>
+                        <input type="file" id="musicFile" accept="audio/*" class="input-style" style="padding-left: 45px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Fotoğraf Galerisi (4-8 Adet)</label>
+                    <input type="file" id="bulkInput" multiple accept="image/*" style="display:none;">
+                    
+                    <div class="media-upload-area" onclick="document.getElementById('bulkInput').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:30px; color:var(--primary); margin-bottom:10px;"></i>
+                        <p style="font-weight:600; font-size:14px;">Fotoğrafları Seçmek İçin Tıkla</p>
+                        <p style="font-size:12px; color:var(--text-light);">veya buraya sürükle</p>
+                    </div>
+
+                    <div class="photo-grid">
+                        <script>
+                            // HTML içinde JS döngüsü olmadığı için burayı statik olarak, ama dinamik ID'lerle oluşturuyoruz
+                            for(let i=1; i<=8; i++) {
+                                document.write(`
+                                    <div class="photo-slot" id="slot${i}" onclick="triggerInput(${i})">
+                                        <input type="file" class="photo-input" id="input${i}" accept="image/*" style="display:none;" onchange="handleSingleFile(this, ${i})">
+                                        <i class="fas fa-plus"></i>
+                                        <img src="" style="display:none;">
+                                        <button class="delete-btn" onclick="removeImage(event, ${i})" style="display:none;"><i class="fas fa-times"></i></button>
+                                    </div>
+                                `);
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label id="lblPartner">Partnerinin Adı</label>
-                <input type="text" id="partnerName" class="input-style" placeholder="Örn: Ayşem, Canım...">
-            </div>
-
-            <div class="form-group">
-                <label id="lblDate">İlişki Başlangıç Tarihi (Sayaç İçin)</label>
-                <input type="datetime-local" id="relationshipDate" class="input-style">
-                <small style="color:#888; font-size:11px;" id="lblDateSmall">Buraya girdiğin tarih ve saatten itibaren sayaç çalışacak.</small>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 0;">
-                <label id="lblMsg">Ana Mesaj (Evet/Hayır Ekranı)</label>
-                <textarea id="proposalMessage" class="input-style" rows="2" placeholder="Örn: Benimle evlenir misin?"></textarea>
-            </div>
-        </div>
-
-        <div class="step-content" id="step2">
-            <h3><i class="fas fa-history" style="color:#f1c40f"></i> Hikaye Tüneli</h3>
-            <p style="font-size:13px; color:#666; margin-bottom:20px; background:#f1f5f9; padding:10px; border-radius:8px;">
-                Seçtiğin temaya göre varsayılan metinler aşağıdadır. İstersen değiştirebilirsin.
-            </p>
-
-            <div class="timeline-editor-box">
-                <h4><i class="fas fa-flag-checkered"></i> 1. Aşama (Başlangıç)</h4>
-                <div class="form-group">
-                    <input type="text" id="t1_title" class="input-style" value="Hikayemiz Başladı">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <textarea id="t1_desc" class="input-style" rows="2">Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü...</textarea>
+            <div class="step-content" id="step4">
+                <div style="text-align:center; padding-top:60px;">
+                    <div style="width:100px; height:100px; background:#ecfdf5; color:#10b981; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 30px auto; font-size:40px;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2>Her Şey Hazır!</h2>
+                    <p class="subtitle" style="max-width:400px; margin:0 auto 30px auto;">
+                        Tüm bilgileri girdiniz. Şimdi sihirli butona basarak web sitenizi oluşturun ve sevdiklerinizle paylaşın.
+                    </p>
+                    <div id="statusMessage" style="font-weight:600; color:var(--primary); min-height:25px; margin-bottom:20px;"></div>
                 </div>
             </div>
 
-            <div class="timeline-editor-box">
-                <h4><i class="fas fa-camera"></i> 2. Aşama (Orta)</h4>
-                <div class="form-group">
-                    <input type="text" id="t2_title" class="input-style" value="O Büyülü An">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <textarea id="t2_desc" class="input-style" rows="2">Gözlerine ilk baktığımda evimi bulduğumu hissettim.</textarea>
-                </div>
-            </div>
-
-            <div class="timeline-editor-box">
-                <h4><i class="fas fa-infinity"></i> 3. Aşama (Final)</h4>
-                <div class="form-group">
-                    <input type="text" id="t3_title" class="input-style" value="Sonsuzluğa İlk Adım">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <textarea id="t3_desc" class="input-style" rows="2">Ve bugün, ömrümü seninle birleştirme sözü veriyorum.</textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="step-content" id="step3">
-            <h3><i class="fas fa-photo-video" style="color:var(--secondary)"></i> Medya Yükle</h3>
-            
-            <div class="form-group">
-                <label>Arka Plan Müziği</label>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <input type="file" id="musicFile" accept="audio/*" class="input-style">
-                </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 0;">
-                <label>Fotoğraflar (8 Adet Seçin)</label>
-                <input type="file" id="bulkInput" multiple accept="image/*" style="display:none;">
-                <button class="btn" onclick="document.getElementById('bulkInput').click()" style="width:100%; margin-bottom:15px; border:2px dashed #cbd5e0; color:#64748b; background:#f8fafc; justify-content:center;">
-                    <i class="fas fa-plus-circle"></i> Toplu Fotoğraf Seç
+            <div class="footer-actions">
+                <button class="btn btn-ghost" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden;">
+                    <i class="fas fa-arrow-left"></i> Geri
                 </button>
-                
-                <div class="photo-grid">
-                    <script>
-                        for(let i=1; i<=8; i++) {
-                            document.write(`
-                                <div class="photo-slot" id="slot${i}" onclick="triggerInput(${i})">
-                                    <input type="file" class="photo-input" id="input${i}" accept="image/*" style="display:none;" onchange="handleSingleFile(this, ${i})">
-                                    <i class="fas fa-image" style="color:#cbd5e0; font-size:18px;"></i>
-                                    <img src="" style="display:none;">
-                                    <button class="delete-btn" onclick="removeImage(event, ${i})"><i class="fas fa-times"></i></button>
-                                </div>
-                            `);
-                        }
-                    </script>
-                </div>
+                <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                    Devam Et <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
-        </div>
-
-        <div class="step-content" id="step4">
-            <div style="text-align:center; padding:30px 10px;">
-                <div style="width:80px; height:80px; background:#dcfce7; color:#22c55e; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px auto; font-size:40px;">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h2 style="margin-bottom:10px;">Her Şey Hazır!</h2>
-                <p style="color:#64748b; font-size:15px; line-height:1.6;">
-                    Bilgileri girdin, hikayeni yazdın ve fotoğrafları seçtin.<br>
-                    Şimdi sihri başlatma zamanı.
-                </p>
-                <div id="statusMessage" style="margin-top:20px; font-weight:600; font-size:14px; color:var(--primary); min-height:20px;"></div>
-            </div>
-        </div>
-
-        <div class="footer-nav">
-            <button class="btn btn-prev" id="prevBtn" onclick="changeStep(-1)" style="visibility:hidden;"><i class="fas fa-arrow-left"></i> Geri</button>
-            <button class="btn btn-next" id="nextBtn" onclick="changeStep(1)">Devam Et <i class="fas fa-arrow-right"></i></button>
-        </div>
+        </main>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    const firebaseConfig = { 
-        apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", 
-        authDomain: "lovespage61.firebaseapp.com", 
-        projectId: "lovespage61", 
-        storageBucket: "lovespage61.firebasestorage.app", 
-        messagingSenderId: "954368938690", 
-        appId: "1:954368938690:web:b6880d8524570e6e06a15b", 
-        measurementId: "G-DR224E42S8" 
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const auth = getAuth(app);
-    let currentUser = null;
-
-    onAuthStateChanged(auth, u => { if(u) currentUser = u; else window.location.href="login.html"; });
-
-    // --- ARKA PLAN EFEKTLERİ ---
-    function startParticleFlow() {
-        const symbols = ['❤️', '💍', '💖', '✨'];
-        setInterval(() => {
-            const p = document.createElement('div');
-            p.className = 'bg-particle';
-            p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = (Math.random() * 15 + 10) + 'px';
-            const duration = Math.random() * 8 + 7;
-            p.style.animation = `floatUp ${duration}s linear forwards`;
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), duration * 1000);
-        }, 1200);
-    }
-    startParticleFlow();
-
-    // --- NAVIGASYON MANTIĞI ---
-    let currentStep = 1;
-    let selectedTheme = 'love';
-    const totalSteps = 4;
-
-    window.changeStep = (n) => {
-        if (n === 1 && !validateStep()) return;
-        currentStep += n;
-        
-        if (currentStep > totalSteps) { 
-            startCreation(); 
-            return; 
-        }
-        
-        updateUI();
-    };
-
-    function validateStep() {
-        if (currentStep === 1) {
-            const name = document.getElementById('partnerName').value.trim();
-            const date = document.getElementById('relationshipDate').value;
-            if (!name) { alert("Partnerinin ismini yazmalısın!"); return false; }
-            if (!date) { alert("Sayaç için ilişki tarihini seçmelisin!"); return false; }
-        }
-        if (currentStep === 3) {
-            if (document.querySelectorAll('.photo-slot.has-img').length === 0) { 
-                alert("En az 1 fotoğraf yüklemelisin!"); 
-                return false; 
-            }
-        }
-        return true;
-    }
-
-    function updateUI() {
-        document.querySelectorAll('.step-content').forEach((s, i) => s.classList.toggle('active', i === currentStep - 1));
-        
-        document.querySelectorAll('.step-circle').forEach((d, i) => {
-            d.classList.toggle('active', i === currentStep - 1);
-            d.classList.toggle('completed', i < currentStep - 1);
-        });
-
-        document.getElementById('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-        
-        const nextBtn = document.getElementById('nextBtn');
-        if(currentStep === totalSteps) {
-            nextBtn.innerHTML = 'OLUŞTUR <i class="fas fa-magic"></i>';
-            nextBtn.style.background = "linear-gradient(to right, #48bb78, #38a169)";
-        } else {
-            nextBtn.innerHTML = 'Devam Et <i class="fas fa-arrow-right"></i>';
-            nextBtn.style.background = ""; // Reset
-        }
-    }
-
-    // --- TEMA SEÇİMİ VE OTOMATİK METİN DEĞİŞİMİ ---
-    window.selectTheme = (t, el) => {
-        selectedTheme = t;
-        document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-
-        // KRAL ÖZELLİK BURADA: Metinleri temaya göre değiştiriyoruz
-        if(t === 'birthday') {
-            document.getElementById('lblPartner').innerText = "Doğum Günü Çocuğunun Adı";
-            document.getElementById('partnerName').placeholder = "Örn: Canım Arkadaşım, Aşkım...";
-            
-            document.getElementById('lblDate').innerText = "Doğum Tarihi (Yaş Sayacı İçin)";
-            document.getElementById('lblDateSmall').innerText = "Bu tarihe göre 'Dünyayı Güzelleştirdiğin Süre' hesaplanacak.";
-            
-            document.getElementById('lblMsg').innerText = "Kutlama Mesajı";
-            document.getElementById('proposalMessage').placeholder = "Örn: İyi ki doğdun, iyi ki varsın!";
-            document.getElementById('proposalMessage').value = "İyi ki doğdun! Nice mutlu yaşlara... 🎂";
-
-            // Timeline Defaultları
-            document.getElementById('t1_title').value = "Dünyaya Merhaba";
-            document.getElementById('t1_desc').value = "Senin doğduğun gün, dünya daha güzel bir yer oldu.";
-            
-            document.getElementById('t2_title').value = "En Güzel Anılar";
-            document.getElementById('t2_desc').value = "Birlikte biriktirdiğimiz onca güzel anıdan sadece biri...";
-            
-            document.getElementById('t3_title').value = "Yeni Yaşın";
-            document.getElementById('t3_desc').value = "Yeni yaşında tüm dileklerinin gerçekleşmesini diliyorum.";
-        
-        } else {
-            // Aşk Modu (Varsayılan)
-            document.getElementById('lblPartner').innerText = "Partnerinin Adı";
-            document.getElementById('partnerName').placeholder = "Örn: Ayşem, Canım...";
-            
-            document.getElementById('lblDate').innerText = "İlişki Başlangıç Tarihi";
-            document.getElementById('lblDateSmall').innerText = "Bu tarihten itibaren aşk sayacı çalışacak.";
-
-            document.getElementById('lblMsg').innerText = "Ana Mesaj (Evet/Hayır Ekranı)";
-            document.getElementById('proposalMessage').placeholder = "Örn: Benimle evlenir misin?";
-            document.getElementById('proposalMessage').value = ""; // Kullanıcı kendi yazsın
-
-            // Timeline Defaultları
-            document.getElementById('t1_title').value = "Hikayemiz Başladı";
-            document.getElementById('t1_desc').value = "Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü...";
-            
-            document.getElementById('t2_title').value = "O Büyülü An";
-            document.getElementById('t2_desc').value = "Gözlerine ilk baktığımda evimi bulduğumu hissettim.";
-            
-            document.getElementById('t3_title').value = "Sonsuzluğa İlk Adım";
-            document.getElementById('t3_desc').value = "Ve bugün, ömrümü seninle birleştirme sözü veriyorum.";
-        }
-    };
-
-    // --- FOTOĞRAF MANTIĞI ---
-    window.triggerInput = (i) => document.getElementById(`input${i}`).click();
-    window.handleSingleFile = (input, i) => { if(input.files[0]) showPreview(input.files[0], i); };
-    
-    document.getElementById('bulkInput').addEventListener('change', e => {
-        const files = Array.from(e.target.files).slice(0, 8);
-        files.forEach((file, i) => {
-            const dt = new DataTransfer(); dt.items.add(file);
-            const input = document.getElementById(`input${i+1}`);
-            input.files = dt.files;
-            showPreview(file, i+1);
-        });
-    });
-
-    function showPreview(file, i) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            const slot = document.getElementById(`slot${i}`);
-            const img = slot.querySelector('img');
-            img.src = e.target.result; img.style.display = 'block';
-            slot.querySelector('.fas').style.display = 'none';
-            slot.querySelector('.delete-btn').style.display = 'block';
-            slot.classList.add('has-img');
+        // FIREBASE CONFIG (Senin projene ait ayarlar)
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", 
+            authDomain: "lovespage61.firebaseapp.com", 
+            projectId: "lovespage61", 
+            storageBucket: "lovespage61.firebasestorage.app", 
+            messagingSenderId: "954368938690", 
+            appId: "1:954368938690:web:b6880d8524570e6e06a15b", 
+            measurementId: "G-DR224E42S8" 
         };
-        reader.readAsDataURL(file);
-    }
 
-    window.removeImage = (e, i) => {
-        e.stopPropagation();
-        const slot = document.getElementById(`slot${i}`);
-        slot.querySelector('img').style.display = 'none';
-        slot.querySelector('.fas').style.display = 'block';
-        slot.querySelector('.delete-btn').style.display = 'none';
-        slot.classList.remove('has-img');
-        document.getElementById(`input${i}`).value = "";
-    };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+        let currentUser = null;
 
-    // --- FIREBASE KAYIT (GÜNCELLENDİ) ---
-    async function startCreation() {
-        const status = document.getElementById('statusMessage');
-        const nextBtn = document.getElementById('nextBtn');
-        nextBtn.disabled = true;
-        status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Site oluşturuluyor, lütfen bekle...';
-
-        try {
-            // Müzik Yükle
-            let musicUrl = "";
-            const musicFile = document.getElementById('musicFile').files[0];
-            if(musicFile) {
-                status.innerHTML = '🎵 Müzik sunucuya yükleniyor...';
-                const mRef = ref(storage, `users/${currentUser.uid}/music_${Date.now()}`);
-                await uploadBytes(mRef, musicFile);
-                musicUrl = await getDownloadURL(mRef);
+        // Kullanıcı giriş yapmış mı kontrolü
+        onAuthStateChanged(auth, u => { 
+            if(u) {
+                currentUser = u; 
+            } else {
+                window.location.href = "login.html"; 
             }
+        });
 
-            // Resimler
-            const imageUrls = [];
-            const photoSlots = document.querySelectorAll('.photo-input');
-            for(let i=0; i<photoSlots.length; i++) {
-                const file = photoSlots[i].files[0];
-                if(file) {
-                    status.innerHTML = `📸 Resimler işleniyor (${i+1}/${photoSlots.length})...`;
-                    const iRef = ref(storage, `users/${currentUser.uid}/img_${Date.now()}_${i}`);
-                    await uploadBytes(iRef, file);
-                    imageUrls.push(await getDownloadURL(iRef));
-                }
-            }
+        // --- URL PARAMETRE KONTROLÜ (OTOMATİK TEMA SEÇİMİ) ---
+        let selectedTheme = 'love'; 
 
-            // Veritabanı Kaydı (YENİ ALANLAR İLE)
-            status.innerHTML = '💾 Hikayeniz kaydediliyor...';
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const templateParam = urlParams.get('template'); 
             
-            await addDoc(collection(db, "proposals"), {
-                userId: currentUser.uid, 
-                theme: selectedTheme,
-                partnerName: document.getElementById('partnerName').value,
-                proposalMessage: document.getElementById('proposalMessage').value || "Sonsuza kadar EVET!",
+            if(templateParam === 'birthday') {
+                selectedTheme = 'birthday';
+                setupTheme('birthday');
+            } else {
+                selectedTheme = 'love';
+                setupTheme('love');
+            }
+        });
+
+        function setupTheme(theme) {
+            const badge = document.getElementById('themeInfoBadge');
+            
+            if(theme === 'birthday') {
+                badge.innerHTML = `<i class="fas fa-birthday-cake"></i> Doğum Günü Projesi`;
+                badge.style.color = "#d97706"; badge.style.background = "#fffbeb"; badge.style.borderColor = "#fcd34d";
                 
-                // YENİ: İlişki Tarihi
-                relationshipDate: document.getElementById('relationshipDate').value,
+                document.getElementById('lblPartner').innerText = "Doğum Günü Çocuğu";
+                document.getElementById('partnerName').placeholder = "Örn: Canım Arkadaşım, Ayşe...";
+                document.getElementById('lblDate').innerText = "Doğum Tarihi";
+                document.getElementById('lblMsg').innerText = "Kutlama Mesajı";
+                document.getElementById('proposalMessage').value = "İyi ki doğdun! Nice mutlu yaşlara... 🎂";
                 
-                // YENİ: Timeline Verileri
-                timeline: [
-                    { 
-                        title: document.getElementById('t1_title').value || "Hikayemiz Başladı", 
-                        desc: document.getElementById('t1_desc').value || "Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü..." 
-                    },
-                    { 
-                        title: document.getElementById('t2_title').value || "O Büyülü An", 
-                        desc: document.getElementById('t2_desc').value || "Gözlerine ilk baktığımda evimi bulduğumu hissettim." 
-                    },
-                    { 
-                        title: document.getElementById('t3_title').value || "Sonsuzluğa İlk Adım", 
-                        desc: document.getElementById('t3_desc').value || "Ve bugün, ömrümü seninle birleştirme sözü veriyorum." 
-                    }
-                ],
-                
-                musicUrl: musicUrl, 
-                images: imageUrls, 
-                createdAt: new Date()
+                document.getElementById('t1_title').value = "Dünyaya Merhaba";
+                document.getElementById('t1_desc').value = "Senin doğduğun gün, dünya daha güzel bir yer oldu.";
+                document.getElementById('t2_title').value = "Birlikte Güzel Anılar";
+                document.getElementById('t2_desc').value = "Paylaştığımız her an benim için çok değerli.";
+                document.getElementById('t3_title').value = "Yeni Yaşın";
+                document.getElementById('t3_desc').value = "Yeni yaşında tüm hayallerin gerçek olsun.";
+            
+            } else {
+                badge.innerHTML = `<i class="fas fa-heart"></i> Aşk / Teklif Projesi`;
+                badge.style.color = "#db2777"; badge.style.background = "#fce7f3"; badge.style.borderColor = "#fbcfe8";
+
+                document.getElementById('lblPartner').innerText = "Partnerinin Adı";
+                document.getElementById('partnerName').placeholder = "Örn: Sevgilim...";
+                document.getElementById('lblDate').innerText = "İlişki Başlangıç Tarihi";
+                document.getElementById('lblMsg').innerText = "Teklif / Ana Mesaj";
+                document.getElementById('proposalMessage').value = "Benimle evlenir misin?";
+
+                document.getElementById('t1_title').value = "Hikayemiz Başladı";
+                document.getElementById('t1_desc').value = "Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü...";
+                document.getElementById('t2_title').value = "O Büyülü An";
+                document.getElementById('t2_desc').value = "Gözlerine ilk baktığımda evimi bulduğumu hissettim.";
+                document.getElementById('t3_title').value = "Sonsuzluğa İlk Adım";
+                document.getElementById('t3_desc').value = "Ve bugün, ömrümü seninle birleştirme sözü veriyorum.";
+            }
+        }
+
+        // --- STEP LOGIC (ADIMLAR ARASI GEÇİŞ) ---
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // window'a atıyoruz ki HTML onclick ile çalışabilsin
+        window.changeStep = (n) => {
+            if (n === 1 && !validateStep()) return;
+            currentStep += n;
+            if (currentStep > totalSteps) { startCreation(); return; }
+            if (currentStep < 1) currentStep = 1;
+            updateUI();
+        };
+
+        function validateStep() {
+            if (currentStep === 1) {
+                if (!document.getElementById('partnerName').value.trim()) { alert("İsim alanı boş bırakılamaz!"); return false; }
+                if (!document.getElementById('relationshipDate').value) { alert("Lütfen bir tarih seçin!"); return false; }
+            }
+            if (currentStep === 3) {
+                // Görünür olan (yüklenmiş) resim var mı?
+                const uploadedImages = document.querySelectorAll('.photo-slot img[style="display: block;"]');
+                if (uploadedImages.length < 1) { alert("En az 1 fotoğraf yüklemelisin!"); return false; }
+            }
+            return true;
+        }
+
+        function updateUI() {
+            // Content Toggle
+            document.querySelectorAll('.step-content').forEach((s, i) => {
+                s.classList.remove('active');
+                if(i === currentStep - 1) s.classList.add('active');
             });
 
-            status.innerHTML = '<span style="color:var(--success)">✅ Başarılı! Paneline yönlendiriliyorsun...</span>';
-            setTimeout(() => window.location.href="dashboard.html", 2000);
+            // Sidebar Stepper Update
+            document.querySelectorAll('.step-item').forEach((d, i) => {
+                d.classList.remove('active', 'completed');
+                if (i < currentStep - 1) d.classList.add('completed');
+                if (i === currentStep - 1) d.classList.add('active');
+            });
 
-        } catch(err) {
-            console.error(err);
-            status.innerHTML = `<span style="color:#e74c3c">Hata: ${err.message}</span>`;
-            nextBtn.disabled = false;
+            // Buttons
+            document.getElementById('prevBtn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if(currentStep === totalSteps) {
+                nextBtn.innerHTML = 'SİTEYİ OLUŞTUR <i class="fas fa-magic"></i>';
+                nextBtn.style.background = "#10b981"; // Green for success
+            } else {
+                nextBtn.innerHTML = 'Devam Et <i class="fas fa-arrow-right"></i>';
+                nextBtn.style.background = ""; // Default Primary
+            }
         }
-    }
-</script>
 
+        // --- FOTOĞRAF İŞLEMLERİ ---
+        
+        // Slot'a tıklayınca input'u aç
+        window.triggerInput = (i) => {
+            document.getElementById(`input${i}`).click();
+        };
+
+        // Tekli dosya seçimi
+        window.handleSingleFile = (input, i) => { 
+            if(input.files[0]) showPreview(input.files[0], i); 
+        };
+        
+        // Toplu seçim (Drag drop veya buton)
+        document.getElementById('bulkInput').addEventListener('change', e => {
+            const files = Array.from(e.target.files).slice(0, 8); // En fazla 8 dosya al
+            files.forEach((file, i) => {
+                const dt = new DataTransfer(); 
+                dt.items.add(file);
+                const input = document.getElementById(`input${i+1}`);
+                if(input) { 
+                    input.files = dt.files; 
+                    showPreview(file, i+1); 
+                }
+            });
+        });
+
+        function showPreview(file, i) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const slot = document.getElementById(`slot${i}`);
+                const img = slot.querySelector('img');
+                const plusIcon = slot.querySelector('.fa-plus');
+                const delBtn = slot.querySelector('.delete-btn');
+
+                img.src = e.target.result; 
+                img.style.display = 'block';
+                plusIcon.style.display = 'none';
+                delBtn.style.display = 'flex';
+                
+                // Style update
+                slot.style.borderStyle = 'solid';
+                slot.style.borderColor = 'var(--success)';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.removeImage = (e, i) => {
+            e.stopPropagation(); // Slotun onclick olayını tetiklememesi için
+            const slot = document.getElementById(`slot${i}`);
+            slot.querySelector('img').style.display = 'none';
+            slot.querySelector('.fa-plus').style.display = 'block';
+            slot.querySelector('.delete-btn').style.display = 'none';
+            slot.style.borderStyle = '';
+            slot.style.borderColor = '';
+            // Input değerini temizle
+            document.getElementById(`input${i}`).value = "";
+        };
+
+        // --- KAYIT İŞLEMİ (FINAL) ---
+        async function startCreation() {
+            const status = document.getElementById('statusMessage');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            nextBtn.disabled = true;
+            nextBtn.style.opacity = "0.7";
+            status.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Dosyalar yükleniyor...';
+
+            try {
+                // 1. Müzik Yükleme
+                let musicUrl = "";
+                const musicFile = document.getElementById('musicFile').files[0];
+                if(musicFile) {
+                    const mRef = ref(storage, `users/${currentUser.uid}/music_${Date.now()}`);
+                    await uploadBytes(mRef, musicFile);
+                    musicUrl = await getDownloadURL(mRef);
+                }
+
+                // 2. Resimler Yükleme
+                const imageUrls = [];
+                const photoSlots = document.querySelectorAll('.photo-input');
+                
+                // Slotları gez
+                for(let i=0; i<photoSlots.length; i++) {
+                    const file = photoSlots[i].files[0];
+                    if(file) {
+                        status.innerText = `Görsel ${imageUrls.length + 1} yükleniyor...`;
+                        const iRef = ref(storage, `users/${currentUser.uid}/img_${Date.now()}_${i}`);
+                        await uploadBytes(iRef, file);
+                        imageUrls.push(await getDownloadURL(iRef));
+                    }
+                }
+
+                // 3. Veritabanına Yazma
+                status.innerText = "Site oluşturuluyor...";
+                
+                await addDoc(collection(db, "proposals"), {
+                    userId: currentUser.uid,
+                    templateId: selectedTheme, // birthday veya love
+                    partnerName: document.getElementById('partnerName').value,
+                    proposalMessage: document.getElementById('proposalMessage').value,
+                    relationshipDate: document.getElementById('relationshipDate').value,
+                    timeline: [
+                        { title: document.getElementById('t1_title').value, desc: document.getElementById('t1_desc').value },
+                        { title: document.getElementById('t2_title').value, desc: document.getElementById('t2_desc').value },
+                        { title: document.getElementById('t3_title').value, desc: document.getElementById('t3_desc').value }
+                    ],
+                    musicUrl: musicUrl,
+                    images: imageUrls, // Array olarak kaydet
+                    status: 'active', 
+                    createdAt: new Date()
+                });
+
+                status.innerHTML = `<span style="color:var(--success)">✅ Başarılı! Panelinize yönlendiriliyorsunuz...</span>`;
+                
+                // 2 saniye sonra panele yönlendir
+                setTimeout(() => window.location.href = "dashboard.html", 2000);
+
+            } catch(err) {
+                console.error(err);
+                status.innerHTML = `<span style="color:#ef4444">Hata: ${err.message}</span>`;
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = "1";
+            }
+        }
+    </script>
 </body>
 </html>

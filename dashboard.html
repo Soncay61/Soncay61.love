@@ -3,187 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DreamWeb - Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>DreamWeb - Yönetim Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #667eea; --secondary: #764ba2; --accent: #ff4757; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        :root {
+            --primary: #4F46E5; --secondary: #ec4899;
+            --bg-body: #f3f4f6; --surface: #ffffff;
+            --text-main: #1f2937; --text-light: #6b7280;
+            --gold: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; }
+
+        /* NAVBAR */
+        nav { background: var(--surface); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--primary); }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .user-name { font-weight: 600; font-size: 14px; display: none; @media(min-width: 768px){ display: block; } }
         
-        body { 
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            min-height: 100vh;
-            color: #2d3436;
+        .btn-buy-credits {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: white; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); transition: 0.3s;
         }
+        .btn-buy-credits:hover { transform: scale(1.05); }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        .btn-logout { background: #fee2e2; color: #ef4444; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-logout:hover { background: #fca5a5; color: white; }
 
-        /* --- GLASS NAVBAR --- */
-        nav {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(15px);
-            padding: 15px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* HEADER & PREMIUM BOX */
+        .header-section { display: flex; justify-content: space-between; align-items: end; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+        .welcome-text h1 { font-size: 28px; font-weight: 700; color: #111; margin-bottom: 5px; }
+        .welcome-text p { color: var(--text-light); }
+
+        .premium-status-box {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white; padding: 15px 25px; border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+            display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s;
         }
-        .logo { font-size: 22px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 10px; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; font-size: 14px; display: flex; align-items: center; gap: 5px; }
+        .premium-status-box:hover { transform: translateY(-2px); }
+        .premium-icon { font-size: 24px; background: rgba(255,255,255,0.2); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+
+        /* PROJELERİM */
+        .projects-section { margin-bottom: 50px; display: none; }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         
-        .btn-my-projects { 
-            background: var(--primary); color: white !important; 
-            padding: 10px 22px; border-radius: 12px; 
-            box-shadow: 0 5px 15px rgba(102,126,234,0.3); 
+        .project-card {
+            background: var(--surface); border-radius: 16px; padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;
+            transition: 0.3s; position: relative;
         }
+        .project-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .pc-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .pc-badge { background: #d1fae5; color: #059669; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .pc-title { font-weight: 600; font-size: 16px; margin-bottom: 5px; }
+        .pc-date { font-size: 12px; color: var(--text-light); }
+        .pc-actions { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-card { flex: 1; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; border: none; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-view { background: #e0e7ff; color: var(--primary); }
+        .btn-del { background: #fee2e2; color: #ef4444; }
 
-        /* --- HERO --- */
-        .hero { padding: 60px 8% 40px; text-align: center; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .hero h1 { font-size: 36px; margin-bottom: 10px; }
+        /* ŞABLONLAR GRID */
+        .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
 
-        /* --- VITRIN / DEMOLAR --- */
-        .showcase { padding: 20px 8% 50px; }
-        .section-title { font-size: 22px; font-weight: 600; margin-bottom: 25px; color: white; display: flex; align-items: center; gap: 10px; }
+        .template-card {
+            background: var(--surface); border-radius: 16px; overflow: hidden;
+            border: 1px solid #e5e7eb; transition: 0.3s; position: relative;
+            display: flex; flex-direction: column;
+        }
+        .template-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+
+        .card-image { height: 160px; position: relative; background: #eee; overflow: hidden; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; }
         
-        .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .demo-card { 
-            background: rgba(255,255,255,0.9); border-radius: 24px; overflow: hidden; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: 0.4s; cursor: pointer;
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);
+        .badge { position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .badge-free { background: #10b981; }
+        .badge-pro { background: #111; display: flex; align-items: center; gap: 4px; }
+
+        /* KİLİT MEKANİZMASI */
+        .locked .card-image::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
         }
-        .demo-card:hover { transform: translateY(-12px); }
-        .demo-thumb { width: 100%; height: 220px; object-fit: cover; }
-        .demo-body { padding: 25px; }
-        .demo-body h3 { font-size: 20px; margin-bottom: 10px; color: #333; }
-        .demo-body p { font-size: 14px; color: #666; line-height: 1.6; }
-
-        /* --- CTA BOX --- */
-        .cta-box { 
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            margin: 40px 8% 60px; padding: 60px; border-radius: 35px; color: white;
-            display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .lock-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 30px; color: white; z-index: 10;
+            background: rgba(0,0,0,0.5); padding: 15px; border-radius: 50%;
         }
-        .cta-content h2 { font-size: 32px; margin-bottom: 15px; }
-        .btn-create { 
-            background: white; color: var(--primary); padding: 18px 45px; 
-            border-radius: 18px; text-decoration: none; font-weight: 700; transition: 0.3s;
-            font-size: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: inline-flex; align-items: center; gap: 8px;
+
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .t-title { font-size: 16px; font-weight: 600; margin-bottom: 5px; }
+        .t-desc { font-size: 12px; color: var(--text-light); margin-bottom: 15px; flex-grow: 1; }
+        
+        .card-actions-t { display: flex; gap: 10px; margin-top: auto; }
+        .btn-action { 
+            padding: 10px; border-radius: 8px; cursor: pointer; text-decoration: none; 
+            text-align: center; font-size: 13px; font-weight: 600; flex: 1; transition: 0.2s; border: none;
         }
-        .btn-create:hover { transform: scale(1.05) translateY(-3px); }
+        .btn-create { background: var(--primary); color: white; }
+        .btn-create:hover { background: #4338ca; }
+        .btn-preview { background: white; color: #333; border: 1px solid #ddd; }
+        .btn-preview:hover { background: #f9fafb; }
+        
+        .btn-locked { background: #374151; color: #d1d5db; cursor: not-allowed; display: flex; align-items: center; justify-content: center; gap: 5px; }
 
-        /* --- MOBİL DÜZENLEMELER --- */
-        @media (max-width: 768px) {
-            /* 1. Navbar Düzeni: Dikey yap */
-            nav {
-                flex-direction: column;
-                padding: 15px;
-                gap: 15px;
-            }
-
-            /* 2. Logo: Biraz büyüt */
-            .logo {
-                font-size: 24px;
-            }
-
-            /* 3. Menü Linkleri: GÖRÜNÜR YAP ve Ortala */
-            .nav-links {
-                display: flex !important; /* Eskiden none idi, artık flex */
-                width: 100%;
-                justify-content: center;
-                gap: 10px;
-                flex-wrap: wrap; /* Sığmazsa alta geçsin */
-            }
-
-            /* 4. Butonlar Mobilde Daha Derli Toplu Olsun */
-            .btn-my-projects {
-                padding: 8px 16px;
-                font-size: 13px;
-                flex-grow: 1; /* Genişliğe yayıl */
-                text-align: center;
-                justify-content: center;
-                max-width: 200px;
-            }
-
-            /* 5. Diğer bileşenler */
-            .cta-box { flex-direction: column; text-align: center; gap: 35px; padding: 40px 20px; }
-            .btn-create { width: 100%; justify-content: center; }
+        /* --- GELİŞMİŞ SATIŞ MODALI --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75); z-index: 999; display: none;
+            justify-content: center; align-items: center; backdrop-filter: blur(8px);
         }
+        .modal {
+            background: white; padding: 0; border-radius: 24px; text-align: center;
+            max-width: 750px; width: 95%; position: relative; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        @keyframes slideUp { from { transform: translateY(50px) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            padding: 25px; color: white; position: relative;
+        }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 24px; color: rgba(255,255,255,0.5); transition:0.3s; }
+        .close-modal:hover { color: white; transform: rotate(90deg); }
+
+        .pricing-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 30px;
+        }
+        
+        .plan-card {
+            border: 2px solid #e5e7eb; border-radius: 16px; padding: 25px;
+            transition: 0.3s; position: relative; cursor: pointer;
+        }
+        .plan-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        .plan-card.featured {
+            border-color: var(--gold); background: #fffbeb;
+        }
+        .badge-popular {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #78350f; font-size: 11px; font-weight: 800;
+            padding: 5px 12px; border-radius: 20px; letter-spacing: 1px;
+        }
+
+        .plan-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #333; }
+        .old-price { text-decoration: line-through; color: #9ca3af; font-size: 14px; }
+        .new-price { font-size: 32px; font-weight: 800; color: #111; margin: 5px 0 15px 0; }
+        .features-list { list-style: none; text-align: left; margin-bottom: 20px; }
+        .features-list li { font-size: 13px; color: #4b5563; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .features-list li i { color: #10b981; }
+
+        .btn-buy {
+            width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; border: none; cursor: pointer; font-size: 14px;
+        }
+        .btn-outline { background: transparent; border: 2px solid #111; color: #111; }
+        .btn-outline:hover { background: #111; color: white; }
+        .btn-filled { background: #111; color: white; }
+        .btn-filled:hover { background: #333; }
+
+        /* KOD GİRME ALANI (GİZLİ) */
+        .code-toggle { 
+            margin: 0 30px 30px 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;
+        }
+        .code-link { color: var(--primary); font-size: 13px; cursor: pointer; text-decoration: underline; }
+        .code-area { 
+            display: none; margin-top: 15px; animation: fadeIn 0.3s ease;
+        }
+        .code-input-group { display: flex; gap: 10px; justify-content: center; }
+        .code-input { padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; width: 60%; text-transform: uppercase; text-align: center; font-weight: 600; }
+        .btn-code { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo"><i class="fas fa-magic"></i> DreamWeb</div>
-        <div class="nav-links">
-            <a href="my-projects.html" class="btn-my-projects"><i class="fas fa-folder-open"></i> Projelerim</a>
-            <a href="#" id="logoutBtn" style="color: var(--accent); font-size: 20px; padding: 5px 10px; border: 1px solid var(--accent); border-radius: 8px;"><i class="fas fa-power-off"></i></a>
+        <div class="logo"><i class="fas fa-layer-group"></i> Dream<span>Web</span></div>
+        <div class="user-profile">
+            <button onclick="openModal()" class="btn-buy-credits">
+                <i class="fas fa-crown"></i> Premium Al
+            </button>
+            <div class="user-name" id="navUserName">Yükleniyor...</div>
+            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </nav>
 
-    <div class="hero">
-        <h1 id="welcomeText">Yükleniyor...</h1>
-        <p>Dijital dünyada unutulmaz anılar bırakmaya hazır mısın?</p>
+    <div class="container">
+        
+        <div class="header-section">
+            <div class="welcome-text">
+                <h1 id="welcomeTitle">Hoş geldin! 👋</h1>
+                <p>Ücretsiz hakkınla bir Doğum Günü sitesi oluşturabilirsin.</p>
+            </div>
+            
+            <div class="premium-status-box" onclick="openModal()" id="premiumBox">
+                <div class="premium-icon"><i class="fas fa-crown"></i></div>
+                <div id="premiumText">
+                    <div style="font-weight:700; font-size:14px;">Premium'a Geç</div>
+                    <div style="font-size:11px; opacity:0.9;">Tüm şablonları açmak için tıkla</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="projects-section" id="projectsSection">
+            <h2 class="section-title"><i class="fas fa-folder-open"></i> Projelerim</h2>
+            <div class="projects-grid" id="projectsGrid"></div>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-magic"></i> Şablon Seç</h2>
+        <div class="templates-grid">
+            
+            <div class="template-card">
+                <div class="card-image">
+                    <span class="badge badge-free">1 HAKKIN VAR</span>
+                    <img src="https://images.unsplash.com/photo-1530103043960-ef38714abb15?auto=format&fit=crop&w=600&q=80">
+                </div>
+                <div class="card-content">
+                    <h3 class="t-title">Doğum Günü</h3>
+                    <p class="t-desc">Konfetili, pastalı ve müzikli eğlenceli kutlama.</p>
+                    <div class="card-actions-t">
+                        <a href="demo.html?type=birthday" target="_blank" class="btn-action btn-preview">Önizle</a>
+                        <a href="editor.html?template=birthday" class="btn-action btn-create">Oluştur</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="template-card locked" id="tpl-love">
+                <div class="card-image">
+                    <span class="badge badge-pro"><i class="fas fa-crown"></i> PREMIUM</span>
+                    <div class="locked-overlay"><i class="fas fa-lock lock-icon"></i></div>
+                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80">
+                </div>
+                <div class="card-content">
+                    <h3 class="t-title">Evlilik Teklifi</h3>
+                    <p class="t-desc">Romantik müzik ve 3D yüzük animasyonu.</p>
+                    <div class="card-actions-t">
+                        <a href="demo.html?type=love" target="_blank" class="btn-action btn-preview">Önizle</a>
+                        <button onclick="openModal()" class="btn-action btn-locked" id="btn-love">
+                            <i class="fas fa-lock"></i> Kilitli
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="template-card locked" id="tpl-apology">
+                <div class="card-image">
+                    <span class="badge badge-pro"><i class="fas fa-crown"></i> PREMIUM</span>
+                    <div class="locked-overlay"><i class="fas fa-lock lock-icon"></i></div>
+                    <img src="https://images.unsplash.com/photo-1516585427167-18e431cb6944?auto=format&fit=crop&w=600&q=80">
+                </div>
+                <div class="card-content">
+                    <h3 class="t-title">Beni Affet 🥺</h3>
+                    <p class="t-desc">Hüzünlü piyano müziği ve fotoğraflı anı kartları.</p>
+                    <div class="card-actions-t">
+                        <a href="demo.html?type=apology" target="_blank" class="btn-action btn-preview">Önizle</a>
+                        <button onclick="openModal()" class="btn-action btn-locked" id="btn-apology">
+                            <i class="fas fa-lock"></i> Kilitli
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="template-card locked" id="tpl-distance">
+                <div class="card-image">
+                    <span class="badge badge-pro"><i class="fas fa-crown"></i> PREMIUM</span>
+                    <div class="locked-overlay"><i class="fas fa-lock lock-icon"></i></div>
+                    <img src="https://images.unsplash.com/photo-1518105570919-e342af1a8250?auto=format&fit=crop&w=600&q=80">
+                </div>
+                <div class="card-content">
+                    <h3 class="t-title">Uzak Mesafe ✈️</h3>
+                    <p class="t-desc">Harita üzerinde kavuşma sayacı ve uçak animasyonu.</p>
+                    <div class="card-actions-t">
+                        <a href="demo.html?type=distance" target="_blank" class="btn-action btn-preview">Önizle</a>
+                        <button onclick="openModal()" class="btn-action btn-locked" id="btn-distance">
+                            <i class="fas fa-lock"></i> Kilitli
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <section class="showcase">
-        <div class="section-title"><i class="fas fa-star" style="color:#f1c40f"></i> İlham Alabileceğin Örnekler</div>
-        
-        <div class="demo-grid">
-            <div class="demo-card" onclick="window.open('demo.html?type=love', '_blank')">
-                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80" class="demo-thumb">
-                <div class="demo-body">
-                    <h3>💍 Rüya Gibi Teklif</h3>
-                    <p>Klasik, romantik ve büyüleyici. Animasyonlu yüzük ve 3D galeri ile ona "Evet" dedirt.</p>
-                </div>
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <i class="fas fa-times close-modal" onclick="closeModal()"></i>
+                <h2 style="margin:0; font-size:24px;">👑 Premium'a Yükselt</h2>
+                <p style="margin:5px 0 0 0; opacity:0.8; font-size:14px;">Açılışa özel indirimli fiyatları kaçırma!</p>
             </div>
-            <div class="demo-card" onclick="window.open('demo.html?type=birthday', '_blank')">
-                <img src="https://images.unsplash.com/photo-1530103043960-ef38714abb15?auto=format&fit=crop&w=600&q=80" class="demo-thumb">
-                <div class="demo-body">
-                    <h3>🎂 Renkli Doğum Günü</h3>
-                    <p>Eğlenceli konfetiler ve neşeli müziklerle ona unutamayacağı bir dijital sürpriz yap.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <div class="cta-box">
-        <div class="cta-content">
-            <h2>Kendi Hikayeni Başlat</h2>
-            <p>Dakikalar içinde tamamen kişiye özel bir web sitesi oluştur.</p>
+            <div class="pricing-grid">
+                <div class="plan-card">
+                    <div class="plan-title">Tek Hak</div>
+                    <div class="old-price">89.90 TL</div>
+                    <div class="new-price">49.90 TL</div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> 1 Adet Premium Site</li>
+                        <li><i class="fas fa-check"></i> Ömür Boyu Yayında Kalır</li>
+                        <li><i class="fas fa-check"></i> Temel Müzikler</li>
+                    </ul>
+                    <button class="btn-buy btn-outline" onclick="startPayment('single')">Satın Al</button>
+                </div>
+
+                <div class="plan-card featured">
+                    <span class="badge-popular">EN POPÜLER</span>
+                    <div class="plan-title">Sınırsız Paket</div>
+                    <div class="old-price">299.90 TL</div>
+                    <div class="new-price">199.90 TL</div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> <strong>Sınırsız</strong> Site Oluştur</li>
+                        <li><i class="fas fa-check"></i> Ömür Boyu Yayında</li>
+                        <li><i class="fas fa-check"></i> Tüm Şablonlar Açık</li>
+                    </ul>
+                    <button class="btn-buy btn-filled" onclick="startPayment('unlimited')">Satın Al</button>
+                </div>
+            </div>
+
+            <div class="code-toggle">
+                <span class="code-link" onclick="toggleCodeArea()">Bir davet kodun var mı?</span>
+                <div class="code-area" id="codeArea">
+                    <div class="code-input-group">
+                        <input type="text" id="redeemInput" class="code-input" placeholder="KODUNUZ">
+                        <button class="btn-code" onclick="redeemCode()">OK</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <a href="editor.html" class="btn-create"><i class="fas fa-plus-circle"></i> YENİ PROJE OLUŞTUR</a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+        // FIREBASE AYARLARI
         const firebaseConfig = { apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", authDomain: "lovespage61.firebaseapp.com", projectId: "lovespage61", storageBucket: "lovespage61.firebasestorage.app", messagingSenderId: "954368938690", appId: "1:954368938690:web:b6880d8524570e6e06a15b", measurementId: "G-DR224E42S8" };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
 
         onAuthStateChanged(auth, user => {
             if(user) {
+                currentUser = user;
                 const name = user.displayName || user.email.split('@')[0];
-                document.getElementById('welcomeText').innerText = `Hoş geldin, ${name}! ✨`;
-            } else { window.location.href = "login.html"; }
+                document.getElementById('navUserName').innerText = name.charAt(0).toUpperCase() + name.slice(1);
+                document.getElementById('welcomeTitle').innerText = `Selam, ${name.charAt(0).toUpperCase() + name.slice(1)}! 👋`;
+                
+                loadUserProjects(user.uid);
+                checkPremiumStatus(user.uid);
+            } else { 
+                window.location.href = "index.html"; 
+            }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            signOut(auth).then(() => window.location.href="index.html");
+        // --- PREMIUM KONTROL SİSTEMİ ---
+        async function checkPremiumStatus(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists() && userDoc.data().plan === "premium") {
+                    unlockAllFeatures();
+                }
+            } catch (e) { console.log("Plan kontrolü hatası", e); }
+        }
+
+        function unlockAllFeatures() {
+            const box = document.getElementById('premiumBox');
+            box.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+            box.innerHTML = `<div class="premium-icon"><i class="fas fa-check"></i></div>
+                             <div><div style="font-weight:700;">Premium Üye</div><div style="font-size:11px;">Tüm özellikler aktif</div></div>`;
+            box.onclick = null;
+
+            // Şablon ID'leri listesi (Apology eklendi)
+            const templates = ['love', 'distance', 'apology'];
+            
+            templates.forEach(t => {
+                const card = document.getElementById(`tpl-${t}`);
+                const btn = document.getElementById(`btn-${t}`);
+                
+                if(card && btn) {
+                    card.classList.remove('locked');
+                    const lockIcon = card.querySelector('.lock-icon');
+                    if(lockIcon) lockIcon.style.display = 'none';
+
+                    btn.classList.remove('btn-locked');
+                    btn.classList.add('btn-create');
+                    btn.innerHTML = 'Oluştur';
+                    btn.onclick = null; // Eski onclick'i temizle
+                    
+                    // ÖZEL YÖNLENDİRME KONTROLÜ
+                    if(t === 'apology') {
+                        btn.addEventListener('click', () => window.location.href = "editor-apology.html");
+                    } else {
+                        btn.addEventListener('click', () => window.location.href = `editor.html?template=${t}`);
+                    }
+                }
+            });
+        }
+
+        // --- KOD VE ÖDEME İŞLEMLERİ ---
+        window.openModal = () => document.getElementById('paymentModal').style.display = 'flex';
+        window.closeModal = () => document.getElementById('paymentModal').style.display = 'none';
+        
+        window.toggleCodeArea = () => {
+            const area = document.getElementById('codeArea');
+            area.style.display = area.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // SAHTE ÖDEME SİMÜLASYONU
+        window.startPayment = (plan) => {
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> İşleniyor...';
+            btn.disabled = true;
+
+            setTimeout(async () => {
+                // Başarılı ödeme simülasyonu -> Premium Yap
+                await setDoc(doc(db, "users", currentUser.uid), { 
+                    plan: "premium", 
+                    purchasedPlan: plan 
+                }, { merge: true });
+
+                alert("🎉 Ödeme Başarılı! Premium özellikler hesabına tanımlandı.");
+                closeModal();
+                unlockAllFeatures();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        window.redeemCode = async () => {
+            const code = document.getElementById('redeemInput').value.trim();
+            if(!code) return alert("Lütfen kod girin.");
+
+            try {
+                const codeRef = doc(db, "codes", code);
+                const codeSnap = await getDoc(codeRef);
+
+                if (codeSnap.exists() && codeSnap.data().isActive) {
+                    await setDoc(doc(db, "users", currentUser.uid), { 
+                        plan: "premium", 
+                        redeemedCode: code 
+                    }, { merge: true });
+
+                    alert("🎉 Tebrikler! Kod başarıyla uygulandı.");
+                    closeModal();
+                    unlockAllFeatures();
+                } else {
+                    alert("❌ Geçersiz kod.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Hata: " + error.message);
+            }
+        }
+
+        // --- PROJELERİ LİSTELE ---
+        async function loadUserProjects(userId) {
+            const grid = document.getElementById('projectsGrid');
+            const section = document.getElementById('projectsSection');
+            
+            try {
+                const q = query(collection(db, "proposals"), where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    section.style.display = 'block';
+                    grid.innerHTML = "";
+
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        const dateStr = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('tr-TR') : "Tarih Yok";
+                        
+                        let icon = '📄';
+                        if(data.templateId === 'love') icon = '💍';
+                        if(data.templateId === 'birthday') icon = '🎂';
+                        if(data.templateId === 'apology') icon = '🥺';
+                        if(data.templateId === 'distance') icon = '✈️';
+
+                        const html = `
+                            <div class="project-card" id="card-${id}">
+                                <div class="pc-header">
+                                    <div style="font-size:24px;">${icon}</div>
+                                    <span class="pc-badge">YAYINDA</span>
+                                </div>
+                                <div class="pc-title">${data.partnerName}</div>
+                                <div class="pc-date"><i class="far fa-clock"></i> ${dateStr}</div>
+                                <div class="pc-actions">
+                                    <a href="view.html?id=${id}" target="_blank" class="btn-card btn-view"><i class="fas fa-eye"></i></a>
+                                    <button onclick="deleteProject('${id}')" class="btn-card btn-del"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                        grid.innerHTML += html;
+                    });
+                }
+            } catch (error) { console.error(error); }
+        }
+
+        window.deleteProject = async (id) => {
+            if(confirm("Silmek istediğine emin misin?")) {
+                await deleteDoc(doc(db, "proposals", id));
+                document.getElementById(`card-${id}`).remove();
+            }
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if(confirm("Çıkış yapmak istiyor musun?")) signOut(auth).then(() => window.location.href="index.html");
         });
     </script>
 </body>

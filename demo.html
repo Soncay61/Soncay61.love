@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürpriz!</title>
+    <title>Önizleme Modu</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- KUTLAMA SAYFASI ÖZEL CSS --- */
+        /* --- KUTLAMA SAYFASI ÖZEL CSS (View.html ile birebir aynı) --- */
         #celebrationPage {
             display: none;
             width: 100%;
@@ -34,68 +35,29 @@
             perspective: 1000px;
         }
 
-        .timer-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 50px;
-            z-index: 20;
-        }
+        /* Demo için CSS override (Style.css'den çekemezse diye garanti) */
+        .box { position: relative; width: 260px; height: 380px; transform-style: preserve-3d; animation: rotate 30s linear infinite; }
+        @keyframes rotate { 0% { transform: perspective(1000px) rotateY(0deg); } 100% { transform: perspective(1000px) rotateY(360deg); } }
+        .dream { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-style: preserve-3d; }
+        .dream span { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: center; transform-style: preserve-3d; transform: rotateY(calc(var(--i) * 45deg)) translateZ(550px); -webkit-box-reflect: below 2px linear-gradient(transparent, transparent, rgba(0,0,0,0.2)); }
+        .dream span img { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; border: 3px solid rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        .timeline-section {
-            width: 100%;
-            max-width: 800px;
-            position: relative;
-            padding: 20px;
-            margin-bottom: 50px;
-        }
-        
-        .timeline-section::before {
-            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 100%; background: rgba(255, 255, 255, 0.3); border-radius: 2px;
-        }
-
-        .timeline-item {
-            width: 100%; margin-bottom: 40px; position: relative; display: flex; justify-content: center;
-        }
-        
-        .timeline-dot {
-            position: absolute; left: 50%; top: 20px; transform: translateX(-50%);
-            width: 20px; height: 20px; background: #fff; border: 4px solid #e73c7e;
-            border-radius: 50%; z-index: 2; box-shadow: 0 0 15px rgba(231, 60, 126, 0.6);
-        }
-
-        .timeline-content {
-            width: 45%; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
-            padding: 20px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
+        .timer-section { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; z-index: 20; }
+        .timeline-section { width: 100%; max-width: 800px; position: relative; padding: 20px; margin-bottom: 50px; }
+        .timeline-section::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: rgba(255, 255, 255, 0.3); border-radius: 2px; }
+        .timeline-item { width: 100%; margin-bottom: 40px; position: relative; display: flex; justify-content: center; }
+        .timeline-dot { position: absolute; left: 50%; top: 20px; transform: translateX(-50%); width: 20px; height: 20px; background: #fff; border: 4px solid #e73c7e; border-radius: 50%; z-index: 2; box-shadow: 0 0 15px rgba(231, 60, 126, 0.6); }
+        .timeline-content { width: 45%; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 20px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .timeline-item:nth-child(odd) .timeline-content { margin-right: auto; text-align: right; }
         .timeline-item:nth-child(even) .timeline-content { margin-left: auto; text-align: left; }
-
         .timeline-date { font-size: 0.9rem; font-weight: 700; color: #ffd700; display: block; margin-bottom: 5px; }
-
-        .promises-section {
-            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px;
-        }
-        .promise-card {
-            background: rgba(255,255,255,0.9); padding: 20px; border-radius: 20px; width: 260px;
-            text-align: center; color: #333; transform: rotate(-2deg); transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+        .promises-section { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; }
+        .promise-card { background: rgba(255,255,255,0.9); padding: 20px; border-radius: 20px; width: 260px; text-align: center; color: #333; transform: rotate(-2deg); transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         .promise-card:nth-child(2) { transform: rotate(2deg); margin-top: 20px; }
         .promise-card:hover { transform: scale(1.05) rotate(0deg); z-index: 10; }
-
         .love-timer-container { text-align: center; }
         .timer-box { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-        .time-segment {
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(5px);
-            padding: 10px; border-radius: 10px; min-width: 70px;
-            border: 1px solid rgba(255,255,255,0.3); color: white;
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .time-segment { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(5px); padding: 10px; border-radius: 10px; min-width: 70px; border: 1px solid rgba(255,255,255,0.3); color: white; display: flex; flex-direction: column; align-items: center; }
         .time-segment span { font-size: 1.5rem; font-weight: 700; }
         .time-segment label { font-size: 0.7rem; text-transform: uppercase; }
 
@@ -184,19 +146,7 @@
         </div>
 
         <div class="promises-section" data-aos="zoom-in" id="bottomCards">
-            <div class="promise-card">
-                <h3>❤️</h3>
-                <p>Seni her gün, ilk günkü heyecanla seveceğime...</p>
             </div>
-            <div class="promise-card">
-                <h3>🤝</h3>
-                <p>En zor günlerinde bile elini hiç bırakmayacağıma...</p>
-            </div>
-            <div class="promise-card">
-                <h3>🏡</h3>
-                <p>Huzurlu, mutlu ve aşk dolu bir yuvamız olacağına...</p>
-            </div>
-        </div>
 
         <h2 id="finalText" style="color:white; margin-bottom: 60px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); text-align:center;">SÖZ VERİYORUM ❤️</h2>
 
@@ -205,242 +155,175 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script> AOS.init({ duration: 1000, once: false }); </script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-        const firebaseConfig = { 
-            apiKey: "AIzaSyCuKzZVAA3K3dtlzxSmIc4h07CyqXMBk5Y", 
-            authDomain: "lovespage61.firebaseapp.com", 
-            projectId: "lovespage61", 
-            storageBucket: "lovespage61.firebasestorage.app", 
-            messagingSenderId: "954368938690", 
-            appId: "1:954368938690:web:b6880d8524570e6e06a15b", 
-            measurementId: "G-DR224E42S8" 
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // --- DAKTİLO EFEKTİ ---
-        function typeWriter(elementId, text, speed, callback) {
-            let i = 0;
-            const element = document.getElementById(elementId);
-            element.innerHTML = "";
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                } else { if (callback) callback(); }
-            }
-            type();
-        }
-
-        // --- SAYAÇ FONKSİYONU ---
-        function startLoveTimer(startDateStr) {
-            // Eğer veri yoksa şu anı al
-            const targetDate = startDateStr ? new Date(startDateStr).getTime() : new Date().getTime();
-            
-            // Timeline'daki tarihi güncelle (TR formatında)
-            const dateObj = new Date(targetDate);
-            document.getElementById('date-meet').innerText = dateObj.toLocaleDateString('tr-TR');
-
-            function update() {
-                const now = new Date().getTime();
-                const gap = now - targetDate;
-
-                const d = Math.floor(gap / (1000 * 60 * 60 * 24));
-                const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((gap % (1000 * 60)) / 1000);
-
-                document.getElementById('t-days').innerText = d;
-                document.getElementById('t-hours').innerText = h < 10 ? '0'+h : h;
-                document.getElementById('t-minutes').innerText = m < 10 ? '0'+m : m;
-                document.getElementById('t-seconds').innerText = s < 10 ? '0'+s : s;
-            }
-            setInterval(update, 1000);
-            update();
-        }
-
-        async function loadSiteData() {
+    <script>
+        // --- SAYFA YÜKLENİNCE (DEMO AYARLARI) ---
+        document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const docId = urlParams.get('id');
-            
-            // VARSAYILAN BOŞ VERİLER (Hata vermemesi için)
-            let data = {
-                partnerName: "Misafir",
-                proposalMessage: "Merhaba!",
-                theme: "love", 
-                musicUrl: "", 
-                images: [],
-                relationshipDate: "", 
-                timeline: []
+            const type = urlParams.get('type'); // ?type=apology gibi
+
+            // Varsayılan (Aşk Modu)
+            let config = {
+                title: "Benimle Evlenir Misin?",
+                subtitle: "Ömrümün geri kalanı olur musun?",
+                yesMsg: "Sonsuza kadar EVET! ❤️",
+                btnYes: "EVET 💍", btnNo: "HAYIR 💔", emoji: '❤️',
+                timer: "Seninle Geçen Her Saniye...", final: "SÖZ VERİYORUM ❤️",
+                icon: `<div class="ring-animation"><img src="https://pngimg.com/uploads/ring/ring_PNG26.png" class="ring-img"></div>`,
+                cards: `
+                    <div class="promise-card"><h3>❤️</h3><p>Seni her gün, ilk günkü heyecanla seveceğime...</p></div>
+                    <div class="promise-card"><h3>🤝</h3><p>En zor günlerinde bile elini hiç bırakmayacağıma...</p></div>
+                    <div class="promise-card"><h3>🏡</h3><p>Huzurlu, mutlu ve aşk dolu bir yuvamız olacağına...</p></div>`,
+                t1: {h:"Hikayemiz Başladı", p:"Hayatımın en güzel tesadüfü seninle karşılaştığım o gündü..."},
+                t2: {h:"O Büyülü An", p:"Gözlerine ilk baktığımda evimi bulduğumu hissettim."},
+                t3: {h:"Sonsuzluğa İlk Adım", p:"Ve bugün, ömrümü seninle birleştirme sözü veriyorum."}
             };
 
-            if (docId) {
-                try {
-                    const docSnap = await getDoc(doc(db, "proposals", docId));
-                    if (docSnap.exists()) data = docSnap.data();
-                } catch (error) { console.error("Hata:", error); }
+            // MODLARA GÖRE DEĞİŞİKLİKLER
+            if(type === 'birthday') {
+                config = {
+                    title: "İyi Ki Doğdun!", subtitle: "Nice mutlu yaşlara...",
+                    yesMsg: "İyi Ki Varsın! 🎉", btnYes: "KUTLA 🎉", btnNo: "HAYIR 🎂", emoji: '🎉',
+                    timer: "Dünyayı Güzelleştirdiğin Süre...", final: "İYİ Kİ DOĞDUN! 🎂",
+                    icon: `<div class="cake-wrapper"><div class="flame"></div><img src="https://i.ibb.co/2Z7fVfM/cake-icon.png" class="cake-img"></div>`,
+                    cards: `
+                        <div class="promise-card"><h3>💊</h3><p>Yeni yaşında sağlık seninle olsun...</p></div>
+                        <div class="promise-card"><h3>🚀</h3><p>Tüm hayallerine ulaşmanı dilerim...</p></div>
+                        <div class="promise-card"><h3>🥳</h3><p>Yüzünden gülücükler hiç eksik olmasın...</p></div>`,
+                    t1: {h:"Dünyaya Merhaba", p:"Senin doğduğun gün, dünya daha güzel bir yer oldu."},
+                    t2: {h:"En Güzel Anılar", p:"Birlikte biriktirdiğimiz onca güzel anıdan sadece biri..."},
+                    t3: {h:"Yeni Yaşın", p:"Yeni yaşında tüm dileklerinin gerçekleşmesini diliyorum."}
+                };
+            } else if(type === 'apology') {
+                config = {
+                    title: "Beni Affeder Misin?", subtitle: "Seni kırmak isteyeceğim son şeydi...",
+                    yesMsg: "Teşekkür Ederim ❤️", btnYes: "AFFET 🤝", btnNo: "ASLA 💔", emoji: '🥺',
+                    timer: "Sensiz Geçen Zor Zaman...", final: "BİR DAHA ASLA... 😿",
+                    icon: `<img src="https://cdn-icons-png.flaticon.com/512/742/742751.png" width="100" style="filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));">`,
+                    cards: `
+                        <div class="promise-card"><h3>😞</h3><p>Hatamın farkındayım ve çok üzgünüm...</p></div>
+                        <div class="promise-card"><h3>🌹</h3><p>Telafi etmek için her şeyi yapmaya hazırım...</p></div>
+                        <div class="promise-card"><h3>❤️</h3><p>Seni kaybetmekten çok korkuyorum...</p></div>`,
+                    t1: {h:"Hata Yaptım", p:"O an düşünemedim, seni kırdım. Çok pişmanım."},
+                    t2: {h:"Pişmanlık", p:"Seni üzdüğümü anladığım an dünya başıma yıkıldı."},
+                    t3: {h:"Özür Dilerim", p:"Lütfen beni affet, bir şans daha ver."}
+                };
+            } else if(type === 'distance') {
+                config = {
+                    title: "Mesafeler Aşka Engel Değil", subtitle: "Kalbim her zaman seninle...",
+                    yesMsg: "Seni Seviyorum! ✈️", btnYes: "KAVUŞACAĞIZ ❤️", btnNo: "ZOR 💔", emoji: '✈️',
+                    timer: "Kavuşmaya Kalan Süre...", final: "BEKLEMEYE DEĞER ❤️",
+                    icon: `<img src="https://cdn-icons-png.flaticon.com/512/619/619055.png" width="100" style="filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));">`,
+                    cards: `
+                        <div class="promise-card"><h3>🌍</h3><p>Aramızda ne kadar yol olursa olsun...</p></div>
+                        <div class="promise-card"><h3>💌</h3><p>Kalbim her saniye senin yanında atıyor...</p></div>
+                        <div class="promise-card"><h3>📅</h3><p>Kavuşacağımız o günü iple çekiyorum...</p></div>`,
+                    t1: {h:"Ayrılık Vakti", p:"Havalimanındaki o son bakış hala aklımda..."},
+                    t2: {h:"Özlem", p:"Her gece resmine bakıp seni düşünüyorum."},
+                    t3: {h:"Kavuşma", p:"Sarılacağımız o günü sabırsızlıkla bekliyorum..."}
+                };
             }
 
-            const isBirthday = data.theme === 'birthday';
-
-            // 1. İKON ve RENKLER
-            document.getElementById('iconContainer').innerHTML = isBirthday ? 
-                `<div class="cake-wrapper"><div class="flame"></div><img src="https://i.ibb.co/2Z7fVfM/cake-icon.png" class="cake-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2682/2682431.png'"></div>` : 
-                `<div class="ring-animation"><img src="https://pngimg.com/uploads/ring/ring_PNG26.png" class="ring-img"></div>`;
+            // HTML DOLDURMA
+            document.getElementById('iconContainer').innerHTML = config.icon;
+            document.getElementById('mainTitle').innerText = config.title;
+            document.getElementById('mainSubtitle').innerText = config.subtitle;
+            document.getElementById('yesButton').innerText = config.btnYes;
+            document.getElementById('noButton').innerText = config.btnNo;
+            document.getElementById('timerTitle').innerText = config.timer;
+            document.getElementById('finalText').innerText = config.final;
+            document.getElementById('bottomCards').innerHTML = config.cards;
             
-            document.getElementById('yesButton').innerHTML = isBirthday ? "KUTLA 🎉" : "EVET 💍";
-            document.getElementById('noButton').innerHTML = isBirthday ? "HAYIR 🎂" : "HAYIR 💔";
+            // Timeline Doldurma
+            document.getElementById('t1-head').innerText = config.t1.h; document.getElementById('t1-body').innerText = config.t1.p;
+            document.getElementById('t2-head').innerText = config.t2.h; document.getElementById('t2-body').innerText = config.t2.p;
+            document.getElementById('t3-head').innerText = config.t3.h; document.getElementById('t3-body').innerText = config.t3.p;
 
-            // 2. TIMELINE VERİLERİ (Varsa doldur)
-            if (data.timeline && data.timeline.length >= 3) {
-                document.getElementById('t1-head').innerText = data.timeline[0].title;
-                document.getElementById('t1-body').innerText = data.timeline[0].desc;
-                
-                document.getElementById('t2-head').innerText = data.timeline[1].title;
-                document.getElementById('t2-body').innerText = data.timeline[1].desc;
-                
-                document.getElementById('t3-head').innerText = data.timeline[2].title;
-                document.getElementById('t3-body').innerText = data.timeline[2].desc;
-            }
-
-            // 3. DOĞUM GÜNÜ İSE ÖZELLEŞTİR
-            if(isBirthday) {
-                // Sayaç Başlığı
-                document.getElementById('timerTitle').innerText = "Dünyayı Güzelleştirdiğin Süre...";
-                
-                // Alt Kartlar (Dilekler)
-                document.getElementById('bottomCards').innerHTML = `
-                    <div class="promise-card"><h3>💊</h3><p>Yeni yaşında sağlık seninle olsun...</p></div>
-                    <div class="promise-card"><h3>🚀</h3><p>Tüm hayallerine ulaşmanı dilerim...</p></div>
-                    <div class="promise-card"><h3>🥳</h3><p>Yüzünden gülücükler hiç eksik olmasın...</p></div>
-                `;
-                
-                // Final Yazısı
-                document.getElementById('finalText').innerText = "İYİ Kİ DOĞDUN! 🎂";
-            }
-
-            // Galeri (Resim yoksa placeholder)
+            // Galeri Doldurma (Demo Resimler)
             const gallery = document.getElementById('photoGallery');
-            const images = (data.images && data.images.length > 0) ? data.images : Array(8).fill("https://picsum.photos/400/600");
-            images.forEach((imgUrl, index) => {
-                if(index < 8) {
-                    const span = document.createElement('span');
-                    span.style.setProperty('--i', index + 1);
-                    const img = document.createElement('img');
-                    img.src = imgUrl;
-                    span.appendChild(img);
-                    gallery.appendChild(span);
-                }
+            for(let i=1; i<=8; i++) {
+                const s = document.createElement('span'); s.style.setProperty('--i',i);
+                const img = document.createElement('img'); img.src=`https://picsum.photos/400/600?random=${i + (type==='birthday'?50:10)}`;
+                s.appendChild(img); gallery.appendChild(s);
+            }
+
+            // --- BUTON VE EFEKTLER ---
+            const yesBtn = document.getElementById('yesButton');
+            const noBtn = document.getElementById('noButton');
+            
+            yesBtn.addEventListener('click', () => {
+                startConfetti(config.emoji);
+                document.getElementById('mainTitle').innerText = config.yesMsg;
+                document.getElementById('btnGroup').style.display='none';
+                setTimeout(() => {
+                    document.getElementById('mainCard').style.opacity='0';
+                    setTimeout(() => {
+                        document.getElementById('mainCard').style.display='none';
+                        document.getElementById('celebrationPage').style.display='flex';
+                        setTimeout(()=>document.getElementById('celebrationPage').style.opacity='1',100);
+                        startLoveTimer();
+                    },500);
+                },2000);
             });
 
-            // GİRİŞ PERDESİ
-            document.getElementById('startBtn').addEventListener('click', () => {
-                if (data.musicUrl) {
-                    const audio = new Audio(data.musicUrl);
-                    audio.volume = 0.6;
-                    audio.play().catch(e => console.log("Ses hatası:", e));
+            // Troll Buton
+            let escapeCount = 0;
+            const noTexts = ["Emin misin?", "Bir daha düşün?", "Son kararın mı?", "Kırma kalbimi...", "Basamazsın ki :)"];
+            
+            function moveButton() {
+                if(escapeCount < 5) {
+                    noBtn.innerText = noTexts[escapeCount];
+                    const x = Math.random() * (window.innerWidth - 100);
+                    const y = Math.random() * (window.innerHeight - 50);
+                    noBtn.style.position = 'absolute'; noBtn.style.left = x+'px'; noBtn.style.top = y+'px';
+                    escapeCount++;
+                } else {
+                    noBtn.style.display = 'none';
                 }
-                const overlay = document.getElementById('startOverlay');
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 1000);
+            }
+            noBtn.addEventListener('mouseover', moveButton);
+            noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-                const titleText = isBirthday ? `İyi Ki Doğdun ${data.partnerName}!` : `Benimle Evlenir Misin ${data.partnerName}?`;
-                const subText = isBirthday ? "Nice mutlu yaşlara..." : "Ömrümün geri kalanı olur musun?";
-
-                typeWriter("mainTitle", titleText, 90, () => {
-                    typeWriter("mainSubtitle", subText, 50, () => {
-                        document.getElementById('btnGroup').style.opacity = '1';
+            // Giriş Animasyonu
+            document.getElementById('startBtn').addEventListener('click', () => {
+                document.getElementById('startOverlay').style.opacity='0';
+                setTimeout(()=>document.getElementById('startOverlay').style.display='none',1000);
+                typeWriter("mainTitle", config.title, 90, () => {
+                    typeWriter("mainSubtitle", config.subtitle, 50, () => {
+                        document.getElementById('btnGroup').style.opacity='1';
                     });
                 });
             });
+        });
 
-            // BUTON MANTIĞI
-            initLogic(data, isBirthday);
+        // Sayaç
+        function startLoveTimer() {
+            const d = new Date(); d.setFullYear(d.getFullYear()-1);
+            document.getElementById('date-meet').innerText = d.toLocaleDateString('tr-TR');
+            setInterval(() => {
+                const now = new Date(); const diff = now - d;
+                document.getElementById('t-days').innerText = Math.floor(diff/(1000*60*60*24));
+                document.getElementById('t-hours').innerText = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+                document.getElementById('t-minutes').innerText = Math.floor((diff%(1000*60*60))/(1000*60));
+                document.getElementById('t-seconds').innerText = Math.floor((diff%(1000*60))/1000);
+            }, 1000);
         }
 
-        function initLogic(data, isBirthday) {
-            const yesButton = document.getElementById('yesButton');
-            const noButton = document.getElementById('noButton');
-            const mainContainer = document.getElementById('mainCard');
-            const celebrationPage = document.getElementById('celebrationPage');
-            const title = document.querySelector('.title');
-            
-            let isYesClicked = false;
-            let escapeCount = 0; 
-            const noTexts = isBirthday ? 
-                ["Emin misin?", "Pasta eridi!", "Yapma be!", "Hadi üfle!", "Tamam pes :)"] : 
-                ["Emin misin?", "Bir daha düşün?", "Son kararın mı?", "Kırma kalbimi...", "Basamazsın ki :)"];
+        // Daktilo
+        function typeWriter(id, txt, spd, cb) {
+            let i=0; document.getElementById(id).innerHTML="";
+            function t() { if(i<txt.length){ document.getElementById(id).innerHTML+=txt.charAt(i); i++; setTimeout(t,spd); } else if(cb) cb(); } t();
+        }
 
-            yesButton.addEventListener('click', function () {
-                if (!isYesClicked) {
-                    isYesClicked = true;
-                    startConfetti(isBirthday ? '🎉' : '❤️');
-                    
-                    title.innerText = data.proposalMessage;
-                    document.getElementById('mainSubtitle').innerText = isBirthday ? "İyi ki varsın!" : 'Seni dünyanın en mutlu insanı yapacağım...';
-                    document.getElementById('btnGroup').style.display = 'none';
-                    
-                    setTimeout(() => {
-                        mainContainer.style.opacity = "0";
-                        setTimeout(() => { 
-                            mainContainer.style.display = "none";
-                            celebrationPage.style.display = "flex";
-                            setTimeout(() => { 
-                                celebrationPage.style.opacity = "1"; 
-                                // SAYACI BAŞLAT (Burada data.relationshipDate kullanılır)
-                                startLoveTimer(data.relationshipDate);
-                            }, 100);
-                        }, 500);
-                    }, 2000); 
-                }
-            });
-
-            function moveButton() {
-                if (escapeCount < 5) {
-                    noButton.innerText = noTexts[escapeCount];
-                    const cardRect = document.querySelector('.card').getBoundingClientRect();
-                    const btnWidth = noButton.offsetWidth;
-                    const btnHeight = noButton.offsetHeight;
-                    const maxX = cardRect.width - btnWidth - 20;
-                    const maxY = cardRect.height - btnHeight - 20;
-                    const x = Math.max(10, Math.random() * maxX);
-                    const y = Math.max(10, Math.random() * maxY);
-                    noButton.style.position = 'absolute';
-                    noButton.style.left = x + 'px';
-                    noButton.style.top = y + 'px';
-                    escapeCount++;
-                } else {
-                    noButton.style.display = 'none';
-                    title.innerText = isBirthday ? "Pastayı üfle artık! 🎂" : "Naz yapma prenses! 😉";
-                }
+        // Konfeti
+        function startConfetti(c) {
+            for(let i=0;i<50;i++) {
+                setTimeout(()=>{
+                    let h=document.createElement('div'); h.className='heart'; h.innerHTML=c;
+                    h.style.left=Math.random()*100+'vw'; h.style.animationDuration=Math.random()*2+3+'s';
+                    document.body.appendChild(h);
+                }, i*100);
             }
-
-            noButton.addEventListener('mouseover', moveButton);
-            noButton.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
         }
-
-        function startConfetti(emoji) { 
-            for(let i=0; i<80; i++) {
-                setTimeout(() => { 
-                    const h = document.createElement('div'); 
-                    h.className='heart'; 
-                    h.innerHTML= Math.random() > 0.5 ? emoji : '✨'; 
-                    h.style.left = Math.random() * 100 + 'vw';
-                    const duration = Math.random() * 3 + 2; 
-                    h.style.animationDuration = duration + 's';
-                    h.style.fontSize = Math.random() * 20 + 20 + 'px';
-                    document.body.appendChild(h); 
-                    setTimeout(() => h.remove(), duration * 1000);
-                }, i * 80); 
-            } 
-        }
-
-        window.addEventListener('DOMContentLoaded', loadSiteData);
     </script>
 </body>
 </html>
